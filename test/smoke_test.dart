@@ -5,6 +5,6 @@ void main() {
   testWidgets('Smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const App());
 
-    expect(find.text('Hello world'), findsOneWidget);
+    expect(find.text('RijksBook'), findsOneWidget);
   });
 }
