@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:rijksbook/widgets.dart';
 
+import '../mocks.dart';
 import '../utils.dart';
 
 void main() {

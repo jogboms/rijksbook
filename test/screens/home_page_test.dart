@@ -1,14 +1,35 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:rijksbook/screens.dart';
 
+import '../mocks.dart';
 import '../utils.dart';
 
 void main() {
   group('HomePage', () {
-    testWidgets('Smoke test', (WidgetTester tester) async {
-      await tester.pumpWidget(makeApp(home: const HomePage()));
+    late MockRijksRepository repository;
 
-      expect(find.text('RijksBook'), findsOneWidget);
+    setUp(() {
+      repository = MockRijksRepository();
+    });
+
+    tearDown(() {
+      reset(repository);
+    });
+
+    testWidgets('Smoke test', (WidgetTester tester) async {
+      when(() => repository.fetchAll(page: any(named: 'page'))).thenAnswer((_) async => dummyArtModelList);
+
+      await mockNetworkImages(() async {
+        await tester.pumpWidget(makeApp(home: const HomePage(), repository: repository));
+
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+        await tester.pumpAndSettle();
+        expect(find.byType(SliverGrid), findsOneWidget);
+      });
     });
   });
 }
