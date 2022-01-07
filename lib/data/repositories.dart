@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:rijksbook/domain.dart';
 
 class DummyRijksRepository implements RijksRepository {
@@ -20,7 +21,7 @@ class DummyRijksRepository implements RijksRepository {
       label: ArtLabel(
         title: 'Lorem Ipsum ' * 2,
         description: 'Lorem Ipsum ' * 5,
-        date: DateTime.now(),
+        date: clock.now(),
         notes: 'Lorem Ipsum ' * 5,
         makerLine: 'Lorem Ipsum ' * 5,
       ),
@@ -33,9 +34,9 @@ class DummyRijksRepository implements RijksRepository {
           biography: 'Lorem Ipsum ' * 5,
           unFixedName: 'Gupta, Rijk van',
           placeOfBirth: 'India',
-          dateOfBirth: DateTime.now(),
+          dateOfBirth: clock.now(),
           placeOfDeath: 'Amsterdam',
-          dateOfDeath: DateTime.now(),
+          dateOfDeath: clock.now(),
           labelDesc: 'Lorem Ipsum ' * 2,
           nationality: 'Indian',
           occupation: <String>['Lorem Ipsum 1', 'Lorem Ipsum 2'],
