@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rijksbook/domain.dart';
+import 'package:rijksbook/provider.dart';
 
 class DetailsPage extends StatefulWidget {
   const DetailsPage({Key? key, required this.art}) : super(key: key);
@@ -14,9 +15,30 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
+  late final RijksRepository repo = context.repository;
+  late final Future<ArtDetail> _future = repo.fetch(widget.art.objectNumber);
+
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(),
-        body: const Center(child: Text('Hello world')),
+        body: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(title: Text(widget.art.title, maxLines: 2), pinned: true),
+            FutureBuilder<ArtDetail>(
+              future: _future,
+              builder: (BuildContext context, AsyncSnapshot<ArtDetail> snapshot) {
+                final ArtDetail? data = snapshot.data;
+                if (data == null) {
+                  return const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
+                }
+
+                return SliverList(
+                  delegate: SliverChildListDelegate(<Widget>[
+                    Text(data.toString()),
+                  ]),
+                );
+              },
+            ),
+          ],
+        ),
       );
 }
