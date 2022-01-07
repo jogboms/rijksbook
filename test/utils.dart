@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:rijksbook/app.dart';
 import 'package:rijksbook/domain.dart';
 
-Widget makeApp(Widget home) => App(home: home);
+import 'mocks.dart';
+
+Widget makeApp({Widget? home, RijksRepository? repository}) =>
+    App(home: home, repository: repository ?? MockRijksRepository());
 
 Art get dummyArtModel {
   const int imageSize = 150;

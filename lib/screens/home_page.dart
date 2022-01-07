@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rijksbook/data.dart';
 import 'package:rijksbook/domain.dart';
+import 'package:rijksbook/provider.dart';
 import 'package:rijksbook/widgets.dart';
 
 import 'details_page.dart';
@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final RijksRepository repo = DummyRijksRepository();
+  late final RijksRepository repo = context.repository;
   late final Future<List<Art>> _future = repo.fetchAll(page: 1);
 
   @override

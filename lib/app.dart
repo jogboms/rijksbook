@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'domain.dart';
+import 'provider.dart';
 import 'screens.dart';
 
 class App extends StatefulWidget {
-  const App({Key? key, this.home}) : super(key: key);
+  const App({Key? key, required this.repository, this.home}) : super(key: key);
 
+  final RijksRepository repository;
   final Widget? home;
 
   @override
@@ -13,9 +16,12 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   @override
-  Widget build(BuildContext context) => MaterialApp(
-        title: 'RijksBook',
-        theme: ThemeData.dark(),
-        home: widget.home ?? const HomePage(),
+  Widget build(BuildContext context) => RepositoryProvider(
+        repository: widget.repository,
+        child: MaterialApp(
+          title: 'RijksBook',
+          theme: ThemeData.dark(),
+          home: widget.home ?? const HomePage(),
+        ),
       );
 }
