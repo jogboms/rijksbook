@@ -31,5 +31,21 @@ void main() {
         expect(find.byType(SliverGrid), findsOneWidget);
       });
     });
+
+    testWidgets('Item navigates to details page when tapped', (WidgetTester tester) async {
+      when(() => repository.fetchAll(page: any(named: 'page'))).thenAnswer((_) async => dummyArtModelList);
+
+      await mockNetworkImages(() async {
+        await tester.pumpWidget(makeApp(home: const HomePage(), repository: repository));
+
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byKey(const ValueKey<String>('0')));
+
+        await tester.pumpAndSettle();
+
+        expect(find.byType(DetailsPage), findsOneWidget);
+      });
+    });
   });
 }
