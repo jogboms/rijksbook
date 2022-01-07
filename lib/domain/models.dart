@@ -1,269 +1,162 @@
-class Art {
-  Art({
-    required this.id,
-    required this.objectNumber,
-    required this.title,
-    required this.longTitle,
-    required this.principalOrFirstMaker,
-    required this.hasImage,
-    required this.showImage,
-    required this.webImage,
-    required this.headerImage,
-    required this.url,
-  });
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final String id;
-  final String objectNumber;
-  final String title;
-  final String longTitle;
-  final String principalOrFirstMaker;
-  final bool hasImage;
-  final bool showImage;
-  final ArtImage webImage;
-  final ArtImage headerImage;
-  final String url;
+part 'models.freezed.dart';
+part 'models.g.dart';
 
-  @override
-  bool operator ==(covariant Art other) =>
-      identical(this, other) ||
-      runtimeType == other.runtimeType && id == other.id && objectNumber == other.objectNumber;
+@freezed
+class Art with _$Art {
+  const factory Art({
+    required String id,
+    required String objectNumber,
+    required String title,
+    required String longTitle,
+    required String principalOrFirstMaker,
+    required bool hasImage,
+    required bool showImage,
+    required ArtImage webImage,
+    required ArtImage headerImage,
+    required ArtLinks links,
+  }) = _Art;
 
-  @override
-  int get hashCode => id.hashCode ^ objectNumber.hashCode;
-
-  @override
-  String toString() =>
-      'Art{id: $id, objectNumber: $objectNumber, title: $title, longTitle: $longTitle, principalOrFirstMaker: $principalOrFirstMaker, hasImage: $hasImage, showImage: $showImage, webImage: $webImage, headerImage: $headerImage, url: $url}';
+  factory Art.fromJson(Map<String, dynamic> json) => _$ArtFromJson(json);
 }
 
-class ArtDetail {
-  ArtDetail({
-    required this.id,
-    required this.objectNumber,
-    required this.colors,
-    required this.title,
-    required this.titles,
-    required this.longTitle,
-    required this.subTitle,
-    required this.scLabelLine,
-    required this.label,
-    required this.description,
-    required this.objectTypes,
-    required this.objectCollection,
-    required this.principalMaker,
-    required this.principalOrFirstMaker,
-    required this.principalMakers,
-    required this.plaqueDescriptionEnglish,
-    required this.materials,
-    required this.productionPlaces,
-    required this.hasImage,
-    required this.showImage,
-    required this.historicalPersons,
-    required this.documentation,
-    required this.dimensions,
-    required this.physicalMedium,
-    required this.webImage,
-    required this.dating,
-  });
+@freezed
+class ArtDetail with _$ArtDetail {
+  const factory ArtDetail({
+    required String id,
+    required String objectNumber,
+    required List<ArtColor> colors,
+    required String title,
+    required List<String> titles,
+    required String longTitle,
+    required String subTitle,
+    required String scLabelLine,
+    required ArtLabel label,
+    required String description,
+    required List<String> objectTypes,
+    required List<String> objectCollection,
+    required String principalMaker,
+    required String principalOrFirstMaker,
+    required List<ArtMaker> principalMakers,
+    required String? plaqueDescriptionEnglish,
+    required List<String> materials,
+    required List<String> productionPlaces,
+    required bool hasImage,
+    required bool showImage,
+    required List<String> historicalPersons,
+    required List<String> documentation,
+    required List<ArtDimension> dimensions,
+    required String physicalMedium,
+    required ArtImage webImage,
+    required ArtDating dating,
+  }) = _ArtDetail;
 
-  final String id;
-  final String objectNumber;
-  final List<ArtColor> colors;
-  final String title;
-  final List<String> titles;
-  final String longTitle;
-  final String subTitle;
-  final String scLabelLine;
-  final ArtLabel label;
-  final String description;
-  final List<String> objectTypes;
-  final List<String> objectCollection;
-  final String principalMaker;
-  final String principalOrFirstMaker;
-  final List<ArtMaker> principalMakers;
-  final String plaqueDescriptionEnglish;
-  final List<String> materials;
-  final List<String> productionPlaces;
-  final bool hasImage;
-  final bool showImage;
-  final List<String> historicalPersons;
-  final List<String> documentation;
-  final List<ArtDimension> dimensions;
-  final String physicalMedium;
-  final ArtImage webImage;
-  final ArtDating dating;
-
-  @override
-  bool operator ==(covariant ArtDetail other) =>
-      identical(this, other) ||
-      runtimeType == other.runtimeType && id == other.id && objectNumber == other.objectNumber;
-
-  @override
-  int get hashCode => id.hashCode ^ objectNumber.hashCode;
-
-  @override
-  String toString() =>
-      'ArtDetail{id: $id, objectNumber: $objectNumber, colors: $colors, title: $title, titles: $titles, longTitle: $longTitle, subTitle: $subTitle, scLabelLine: $scLabelLine, label: $label, description: $description, objectTypes: $objectTypes, objectCollection: $objectCollection, principalMaker: $principalMaker, principalOrFirstMaker: $principalOrFirstMaker, principalMakers: $principalMakers, plaqueDescriptionEnglish: $plaqueDescriptionEnglish, materials: $materials, productionPlaces: $productionPlaces, hasImage: $hasImage, showImage: $showImage, historicalPersons: $historicalPersons, documentation: $documentation, dimensions: $dimensions, physicalMedium: $physicalMedium, webImage: $webImage, dating: $dating}';
+  factory ArtDetail.fromJson(Map<String, dynamic> json) => _$ArtDetailFromJson(json);
 }
 
-class ArtImage {
-  ArtImage({required this.guid, required this.url, required this.width, required this.height});
+@freezed
+class ArtColor with _$ArtColor {
+  const factory ArtColor({required double percentage, required String hex}) = _ArtColor;
 
-  final String guid;
-  final String url;
-  final int width;
-  final int height;
-
-  @override
-  bool operator ==(covariant ArtImage other) =>
-      identical(this, other) || runtimeType == other.runtimeType && guid == other.guid;
-
-  @override
-  int get hashCode => guid.hashCode;
-
-  @override
-  String toString() => 'ArtImage{guid: $guid, url: $url, width: $width, height: $height}';
+  factory ArtColor.fromJson(Map<String, dynamic> json) => _$ArtColorFromJson(json);
 }
 
-class ArtMaker {
-  ArtMaker({
-    required this.name,
-    required this.bio,
-    required this.unFixedName,
-    required this.nationality,
-    required this.placeOfBirth,
-    required this.dateOfBirth,
-    required this.placeOfDeath,
-    required this.dateOfDeath,
-    required this.labelDesc,
-    required this.occupation,
-    required this.roles,
-  });
+@freezed
+class ArtDating with _$ArtDating {
+  const factory ArtDating({
+    required String presentingDate,
+    required int sortingDate,
+    required int period,
+    required int yearEarly,
+    required int yearLate,
+  }) = _ArtDating;
 
-  final String name;
-  final String? bio;
-  final String unFixedName;
-  final String nationality;
-  final String placeOfBirth;
-  final DateTime dateOfBirth;
-  final String? placeOfDeath;
-  final DateTime? dateOfDeath;
-  final String? labelDesc;
-  final List<String> occupation;
-  final List<String> roles;
-
-  @override
-  bool operator ==(covariant ArtMaker other) =>
-      identical(this, other) || runtimeType == other.runtimeType && name == other.name && bio == other.bio;
-
-  @override
-  int get hashCode => name.hashCode ^ bio.hashCode;
-
-  @override
-  String toString() =>
-      'ArtMaker{name: $name, bio: $bio, unFixedName: $unFixedName, nationality: $nationality, placeOfBirth: $placeOfBirth, dateOfBirth: $dateOfBirth, placeOfDeath: $placeOfDeath, dateOfDeath: $dateOfDeath, labelDesc: $labelDesc, occupation: $occupation, roles: $roles}';
+  factory ArtDating.fromJson(Map<String, dynamic> json) => _$ArtDatingFromJson(json);
 }
 
-class ArtDimension {
-  ArtDimension({required this.unit, required this.type, required this.value});
+@freezed
+class ArtDimension with _$ArtDimension {
+  const factory ArtDimension({
+    required String unit,
+    required String type,
+    @JsonKey(fromJson: _stringToDoubleParser) required double value,
+  }) = _ArtDimension;
 
-  final String unit;
-  final String type;
-  final double value;
-
-  @override
-  bool operator ==(covariant ArtDimension other) =>
-      identical(this, other) ||
-      runtimeType == other.runtimeType && unit == other.unit && type == other.type && value == other.value;
-
-  @override
-  int get hashCode => unit.hashCode ^ type.hashCode ^ value.hashCode;
-
-  @override
-  String toString() => 'ArtDimension{unit: $unit, type: $type, value: $value}';
+  factory ArtDimension.fromJson(Map<String, dynamic> json) => _$ArtDimensionFromJson(json);
 }
 
-class ArtColor {
-  ArtColor({required this.percentage, required this.hex});
+@freezed
+class ArtLabel with _$ArtLabel {
+  const factory ArtLabel({
+    required String? title,
+    required String? makerLine,
+    required String? description,
+    required String? notes,
+    required DateTime date,
+  }) = _ArtLabel;
 
-  final double percentage;
-  final String hex;
-
-  @override
-  bool operator ==(covariant ArtColor other) =>
-      identical(this, other) || runtimeType == other.runtimeType && percentage == other.percentage && hex == other.hex;
-
-  @override
-  int get hashCode => percentage.hashCode ^ hex.hashCode;
-
-  @override
-  String toString() => 'ArtColor{percentage: $percentage, hex: $hex}';
+  factory ArtLabel.fromJson(Map<String, dynamic> json) => _$ArtLabelFromJson(json);
 }
 
-class ArtDating {
-  ArtDating({
-    required this.presentingDate,
-    required this.sortingDate,
-    required this.period,
-    required this.yearEarly,
-    required this.yearLate,
-  });
+@freezed
+class ArtLinks with _$ArtLinks {
+  const factory ArtLinks({String? web, String? self, String? search}) = _ArtLinks;
 
-  final int presentingDate;
-  final int sortingDate;
-  final int period;
-  final int yearEarly;
-  final int yearLate;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ArtDating &&
-          runtimeType == other.runtimeType &&
-          presentingDate == other.presentingDate &&
-          sortingDate == other.sortingDate &&
-          period == other.period &&
-          yearEarly == other.yearEarly &&
-          yearLate == other.yearLate;
-
-  @override
-  int get hashCode =>
-      presentingDate.hashCode ^ sortingDate.hashCode ^ period.hashCode ^ yearEarly.hashCode ^ yearLate.hashCode;
-
-  @override
-  String toString() =>
-      'ArtDating{presentingDate: $presentingDate, sortingDate: $sortingDate, period: $period, yearEarly: $yearEarly, yearLate: $yearLate}';
+  factory ArtLinks.fromJson(Map<String, dynamic> json) => _$ArtLinksFromJson(json);
 }
 
-class ArtLabel {
-  ArtLabel({
-    required this.title,
-    required this.makerLine,
-    required this.description,
-    required this.notes,
-    required this.date,
-  });
+@freezed
+class ArtMaker with _$ArtMaker {
+  const factory ArtMaker({
+    required String name,
+    required String unFixedName,
+    required String? placeOfBirth,
+    @JsonKey(fromJson: _dateOfBirthParser) required DateTime dateOfBirth,
+    @JsonKey(fromJson: _dateOfBirthNullableParser) required DateTime? dateOfDeath,
+    required String? placeOfDeath,
+    required List<String> occupation,
+    required List<String> roles,
+    required String? nationality,
+    required String? biography,
+    required String labelDesc,
+  }) = _ArtMaker;
 
-  final String title;
-  final String makerLine;
-  final String description;
-  final String notes;
-  final DateTime date;
+  factory ArtMaker.fromJson(Map<String, dynamic> json) => _$ArtMakerFromJson(json);
+}
 
-  @override
-  bool operator ==(covariant ArtLabel other) =>
-      identical(this, other) ||
-      runtimeType == other.runtimeType &&
-          title == other.title &&
-          makerLine == other.makerLine &&
-          description == other.description &&
-          notes == other.notes &&
-          date == other.date;
+@freezed
+class ArtImage with _$ArtImage {
+  const factory ArtImage({required String guid, required int width, required int height, required String url}) =
+      _ArtImage;
 
-  @override
-  int get hashCode => title.hashCode ^ makerLine.hashCode ^ description.hashCode ^ notes.hashCode ^ date.hashCode;
+  factory ArtImage.fromJson(Map<String, dynamic> json) => _$ArtImageFromJson(json);
+}
 
-  @override
-  String toString() =>
-      'ArtLabel{title: $title, makerLine: $makerLine, description: $description, notes: $notes, date: $date}';
+double _stringToDoubleParser(String value) => double.parse(value);
+
+DateTime _dateOfBirthParser(String value) {
+  final List<String> parts = value.split('-');
+  if (parts.length == 3) {
+    return DateTime.parse(value);
+  }
+  final String? month = parts.elementAtOrNull(1);
+  final String? day = parts.elementAtOrNull(2);
+  return DateTime(
+    int.parse(parts[0]),
+    month != null ? int.parse(month) : 0,
+    day != null ? int.parse(day) : 0,
+  );
+}
+
+DateTime? _dateOfBirthNullableParser(String? value) => value == null ? null : _dateOfBirthParser(value);
+
+extension ListExtension<E> on List<E> {
+  E? elementAtOrNull(int index) {
+    try {
+      return elementAt(index);
+    } catch (_) {
+      return null;
+    }
+  }
 }
