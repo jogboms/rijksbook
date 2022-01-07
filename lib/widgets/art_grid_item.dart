@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:rijksbook/domain.dart';
 
 class ArtGridItem extends StatelessWidget {
-  const ArtGridItem({Key? key, required this.art}) : super(key: key);
+  const ArtGridItem({Key? key, required this.art, required this.onPressed}) : super(key: key);
 
   final Art art;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class ArtGridItem extends StatelessWidget {
       child: Material(
         type: MaterialType.transparency,
         child: InkWell(
-          onTap: () {},
+          onTap: onPressed,
           child: Stack(
             children: <Widget>[
               Positioned.fill(

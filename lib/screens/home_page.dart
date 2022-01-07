@@ -3,6 +3,8 @@ import 'package:rijksbook/data.dart';
 import 'package:rijksbook/domain.dart';
 import 'package:rijksbook/widgets.dart';
 
+import 'details_page.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -36,9 +38,13 @@ class _HomePageState extends State<HomePage> {
                       mainAxisSpacing: 8,
                     ),
                     delegate: SliverChildBuilderDelegate(
-                      (_, int index) {
+                      (BuildContext context, int index) {
                         final Art art = items[index];
-                        return ArtGridItem(key: ValueKey<String>(art.id), art: art);
+                        return ArtGridItem(
+                          key: ValueKey<String>(art.id),
+                          art: art,
+                          onPressed: () => DetailsPage.go(context, art: art),
+                        );
                       },
                       childCount: items.length,
                     ),
