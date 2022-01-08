@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+const String appName = 'RijksBook';
+
 class AppSpacing {
   static const Widget v2 = SizedBox(height: 2);
   static const Widget v4 = SizedBox(height: 4);
