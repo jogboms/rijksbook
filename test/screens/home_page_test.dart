@@ -27,7 +27,8 @@ void main() {
 
         expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-        await tester.pumpAndSettle();
+        await tester.pump();
+
         expect(find.byType(SliverGrid), findsOneWidget);
       });
     });
@@ -39,7 +40,7 @@ void main() {
       await mockNetworkImages(() async {
         await tester.pumpWidget(makeApp(home: const HomePage(), repository: repository));
 
-        await tester.pumpAndSettle();
+        await tester.pump();
 
         await tester.tap(find.byKey(const ValueKey<String>('0')));
 

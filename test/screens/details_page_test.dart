@@ -27,7 +27,7 @@ void main() {
 
         expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-        await tester.pumpAndSettle();
+        await tester.pump();
 
         expect(find.byKey(Key(dummyArtModel.id)), findsOneWidget);
       });
