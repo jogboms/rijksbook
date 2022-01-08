@@ -84,6 +84,43 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
+              SliverToBoxAdapter(
+                child: AnimatedBuilder(
+                  animation: controller,
+                  child: const SizedBox.shrink(),
+                  builder: (BuildContext context, Widget? child) {
+                    if (_loadingStatus == LoadingStatus.initial || !(controller.isLoading || controller.hasError)) {
+                      return child!;
+                    }
+
+                    return SafeArea(
+                      top: false,
+                      child: SizedBox(
+                        height: kToolbarHeight,
+                        child: Material(
+                          child: controller.isLoading
+                              ? const LoadingSpinner()
+                              : controller.hasError
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(child: Text(controller.error!.message)),
+                                          AppSpacing.h4,
+                                          TextButton(
+                                            onPressed: () => controller.fetch(retry: true),
+                                            child: const Text('RETRY'),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : null,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),
