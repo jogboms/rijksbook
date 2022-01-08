@@ -99,7 +99,9 @@ class _DataView extends StatelessWidget {
         ArtColorRow(colors: data.normalizedColors),
         AppSpacing.v2,
         ArtMaterialRow(materials: data.materials),
-        AppSpacing.v12,
+        AppSpacing.v16,
+        const Divider(),
+        AppSpacing.v16,
         const _SectionHeaderText('Dimensions'),
         AppSpacing.v8,
         for (final ArtDimension dimension in data.dimensions)

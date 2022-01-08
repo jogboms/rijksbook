@@ -16,11 +16,7 @@ class ArtMakerItem extends ListTile {
               if (maker.nationality != null) Text(maker.nationality!),
             ],
           ),
-          trailing: const Icon(Icons.description),
           isThreeLine: maker.nationality != null,
-          onTap: () {
-            // TODO
-          },
           horizontalTitleGap: 8,
           subtitle: Text(maker.roles.join(', ')),
           contentPadding: EdgeInsets.zero,
