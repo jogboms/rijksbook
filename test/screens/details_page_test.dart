@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:rijksbook/screens.dart';
+import 'package:rijksbook/widgets.dart';
 
 import '../mocks.dart';
 import '../utils.dart';
@@ -25,7 +26,7 @@ void main() {
       await mockNetworkImages(() async {
         await tester.pumpWidget(makeApp(home: DetailsPage(art: dummyArtModel), repository: repository));
 
-        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        expect(find.byKey(LoadingSpinner.defaultKey), findsOneWidget);
 
         await tester.pump();
 

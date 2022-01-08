@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
               builder: (BuildContext context, AsyncSnapshot<List<Art>> snapshot) {
                 final List<Art>? items = snapshot.data;
                 if (items == null) {
-                  return const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
+                  return const SliverToBoxAdapter(child: LoadingSpinner());
                 }
 
                 return SliverPadding(

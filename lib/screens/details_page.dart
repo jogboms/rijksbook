@@ -41,7 +41,7 @@ class _DetailsPageState extends State<DetailsPage> {
               builder: (BuildContext context, AsyncSnapshot<ArtDetail> snapshot) {
                 final ArtDetail? data = snapshot.data;
                 if (data == null) {
-                  return const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
+                  return const SliverToBoxAdapter(child: LoadingSpinner());
                 }
 
                 return SliverPadding(
