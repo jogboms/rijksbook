@@ -34,6 +34,7 @@ void main() {
 
     testWidgets('Item navigates to details page when tapped', (WidgetTester tester) async {
       when(() => repository.fetchAll(page: any(named: 'page'))).thenAnswer((_) async => dummyArtModelList);
+      when(() => repository.fetch(any())).thenAnswer((_) async => dummyArtDetailModel);
 
       await mockNetworkImages(() async {
         await tester.pumpWidget(makeApp(home: const HomePage(), repository: repository));

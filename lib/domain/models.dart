@@ -97,10 +97,10 @@ class ArtDimension with _$ArtDimension {
 @freezed
 class ArtLabel with _$ArtLabel {
   const factory ArtLabel({
-    required String? title,
-    required String? makerLine,
-    required String? description,
-    required String? notes,
+    String? title,
+    String? makerLine,
+    String? description,
+    String? notes,
     required DateTime date,
   }) = _ArtLabel;
 
