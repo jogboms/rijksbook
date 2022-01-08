@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rijksbook/constants.dart';
 import 'package:rijksbook/domain.dart';
 
 class ArtGridItem extends StatelessWidget {
@@ -20,7 +21,7 @@ class ArtGridItem extends StatelessWidget {
           child: Stack(
             children: <Widget>[
               Positioned.fill(
-                child: Ink.image(image: NetworkImage(art.headerImage.url), fit: BoxFit.cover),
+                child: Ink.image(image: NetworkImage(art.webImage.url), fit: BoxFit.cover),
               ),
               Positioned(
                 top: 0,
@@ -31,8 +32,8 @@ class ArtGridItem extends StatelessWidget {
                   decoration: BoxDecoration(color: Colors.black38, borderRadius: BorderRadius.circular(16)),
                   child: Row(
                     children: <Widget>[
-                      const Icon(Icons.person, size: 14),
-                      const SizedBox(width: 4),
+                      Icon(Icons.format_paint, size: 14, color: theme.colorScheme.onBackground),
+                      AppSpacing.h4,
                       Text(
                         art.principalOrFirstMaker,
                         maxLines: 1,
