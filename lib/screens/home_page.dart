@@ -43,7 +43,19 @@ class _HomePageState extends State<HomePage> {
                     }
                     if (controller.hasError) {
                       return SliverFillRemaining(
-                        child: Center(child: Text(controller.error!.message)),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text(controller.error!.message),
+                              AppSpacing.v4,
+                              TextButton(
+                                onPressed: () => controller.fetch(retry: true),
+                                child: const Text('RETRY'),
+                              ),
+                            ],
+                          ),
+                        ),
                       );
                     }
                   }

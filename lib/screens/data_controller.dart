@@ -28,10 +28,10 @@ class PagedDataController with ChangeNotifier {
 
   bool get hasError => _state == ConnectionState.done && error != null;
 
-  Future<void> fetch() async {
+  Future<void> fetch({bool retry = false}) async {
     state = ConnectionState.waiting;
     try {
-      final int page = _page + 1;
+      final int page = retry ? _page : _page + 1;
       final List<Art> items = await repo.fetchAll(page: _page);
       _data = data..addAll(items);
       _page = page;
