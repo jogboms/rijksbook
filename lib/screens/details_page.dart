@@ -31,7 +31,7 @@ class _DetailsPageState extends State<DetailsPage> {
               stretch: true,
               expandedHeight: widget.art.headerImage.height / MediaQuery.of(context).devicePixelRatio,
               flexibleSpace: FlexibleSpaceBar(
-                background: CachedImage(url: widget.art.headerImage.url),
+                background: widget.art.headerImage.url != null ? CachedImage(url: widget.art.headerImage.url!) : null,
                 stretchModes: const <StretchMode>[StretchMode.zoomBackground],
                 collapseMode: CollapseMode.parallax,
               ),
@@ -93,9 +93,11 @@ class _DataView extends StatelessWidget {
         ),
         AppSpacing.v16,
         Text(data.scLabelLine, style: textTheme.caption),
-        AppSpacing.v4,
-        AspectRatio(aspectRatio: data.webImage.aspectRatio, child: CachedImage(url: data.webImage.url)),
-        AppSpacing.v4,
+        if (data.webImage.url != null) ...<Widget>[
+          AppSpacing.v4,
+          AspectRatio(aspectRatio: data.webImage.aspectRatio, child: CachedImage(url: data.webImage.url!)),
+          AppSpacing.v4,
+        ],
         ArtColorRow(colors: data.normalizedColors),
         AppSpacing.v2,
         ArtMaterialRow(materials: data.materials),

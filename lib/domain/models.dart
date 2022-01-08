@@ -143,8 +143,7 @@ extension ArtMakerExtension on ArtMaker {
 
 @freezed
 class ArtImage with _$ArtImage {
-  const factory ArtImage({required String guid, required int width, required int height, required String url}) =
-      _ArtImage;
+  const factory ArtImage({String? guid, required int width, required int height, String? url}) = _ArtImage;
 
   factory ArtImage.fromJson(Map<String, dynamic> json) => _$ArtImageFromJson(json);
 }
