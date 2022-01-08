@@ -80,7 +80,7 @@ class ArtDimension with _$ArtDimension {
   const factory ArtDimension({
     required String unit,
     required String type,
-    @JsonKey(fromJson: _stringToDoubleParser) required double value,
+    @JsonKey(fromJson: stringToDoubleParser) required double value,
   }) = _ArtDimension;
 
   factory ArtDimension.fromJson(Map<String, dynamic> json) => _$ArtDimensionFromJson(json);
@@ -112,8 +112,8 @@ class ArtMaker with _$ArtMaker {
     required String name,
     required String unFixedName,
     required String? placeOfBirth,
-    @JsonKey(fromJson: _dateOfBirthParser) required DateTime dateOfBirth,
-    @JsonKey(fromJson: _dateOfBirthNullableParser) required DateTime? dateOfDeath,
+    @JsonKey(fromJson: stringToDateParser) required DateTime dateOfBirth,
+    @JsonKey(fromJson: stringToDateNullableParser) required DateTime? dateOfDeath,
     required String? placeOfDeath,
     required List<String> occupation,
     required List<String> roles,
@@ -133,9 +133,11 @@ class ArtImage with _$ArtImage {
   factory ArtImage.fromJson(Map<String, dynamic> json) => _$ArtImageFromJson(json);
 }
 
-double _stringToDoubleParser(String value) => double.parse(value);
+@visibleForTesting
+double stringToDoubleParser(String value) => double.tryParse(value) ?? 0.0;
 
-DateTime _dateOfBirthParser(String value) {
+@visibleForTesting
+DateTime stringToDateParser(String value) {
   final List<String> parts = value.split('-');
   if (parts.length == 3) {
     return DateTime.parse(value);
@@ -143,15 +145,17 @@ DateTime _dateOfBirthParser(String value) {
   final String? month = parts.elementAtOrNull(1);
   final String? day = parts.elementAtOrNull(2);
   return DateTime(
-    int.parse(parts[0]),
-    month != null ? int.parse(month) : 0,
-    day != null ? int.parse(day) : 0,
+    int.tryParse(parts[0].replaceAll(RegExp('[^0-9]'), '')) ?? 0,
+    month != null ? int.tryParse(month) ?? 1 : 1,
+    day != null ? int.tryParse(day) ?? 1 : 1,
   );
 }
 
-DateTime? _dateOfBirthNullableParser(String? value) => value == null ? null : _dateOfBirthParser(value);
+@visibleForTesting
+DateTime? stringToDateNullableParser([String? value]) => value == null ? null : stringToDateParser(value);
 
 extension ListExtension<E> on List<E> {
+  @visibleForTesting
   E? elementAtOrNull(int index) {
     try {
       return elementAt(index);
