@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rijksbook/domain.dart';
 
@@ -34,6 +35,32 @@ void main() {
       test('ListExtension.elementAtOrNull', () {
         expect(<int>[].elementAtOrNull(0), isNull);
         expect(<int>[1, 2].elementAtOrNull(1), 2);
+      });
+
+      test('ArtImageExtension.aspectRatio', () {
+        expect(const ArtImage(guid: '', url: '', width: 2, height: 4).aspectRatio, .5);
+        expect(const ArtImage(guid: '', url: '', width: 4, height: 2).aspectRatio, 2);
+      });
+
+      test('ArtColorExtension.hexAsInt', () {
+        expect(const ArtColor(percentage: 0, hex: '000000').hexAsInt, 4278190080);
+        expect(const ArtColor(percentage: 0, hex: '#000000').hexAsInt, 4278190080);
+        expect(const ArtColor(percentage: 0, hex: '#999999').hexAsInt, 4288256409);
+        expect(const ArtColor(percentage: 0, hex: '#ffffff').hexAsInt, 4294967295);
+      });
+
+      test('ArtMakerExtension.initials', () {
+        final ArtMaker maker = ArtMaker(
+          name: '',
+          unFixedName: '',
+          dateOfBirth: clock.now(),
+          biography: '',
+          roles: const <String>[],
+          labelDesc: '',
+          occupation: const <String>[],
+        );
+        expect(maker.copyWith(unFixedName: 'Jong, Luuk van de').initials, 'J.L');
+        expect(maker.copyWith(unFixedName: 'Willson, Paul Monk Bailey').initials, 'W.P');
       });
     });
   });

@@ -42,14 +42,16 @@ class DummyRijksRepository implements RijksRepository {
   @override
   Future<ArtDetail> fetch(String objectNumber) async {
     const int imageSize = 150;
+    final List<ArtColor> colors = <ArtColor>[
+      const ArtColor(percentage: 80, hex: '009688'),
+      const ArtColor(percentage: 10, hex: '00a688'),
+      const ArtColor(percentage: 10, hex: '00b688')
+    ];
     return ArtDetail(
       id: objectNumber,
       objectNumber: objectNumber,
-      colors: <ArtColor>[
-        const ArtColor(percentage: 80, hex: '009688'),
-        const ArtColor(percentage: 10, hex: '00a688'),
-        const ArtColor(percentage: 10, hex: '00b688')
-      ],
+      colors: colors,
+      normalizedColors: colors,
       title: 'Lorem Ipsum ' * 5,
       titles: <String>['Lorem Ipsum ' * 5, 'Lorem Ipsum ' * 10],
       longTitle: 'Lorem Ipsum ' * 10,
@@ -82,6 +84,8 @@ class DummyRijksRepository implements RijksRepository {
       ],
       plaqueDescriptionEnglish: 'Lorem Ipsum ' * 5,
       materials: <String>['oil', 'canvas'],
+      techniques: <String>['painting'],
+      physicalProperties: <String>['canvas'],
       productionPlaces: <String>['Amsterdam'],
       hasImage: true,
       showImage: true,
