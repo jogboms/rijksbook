@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'constants.dart';
 import 'domain.dart';
 import 'provider.dart';
 import 'screens.dart';
@@ -19,7 +20,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) => RepositoryProvider(
         repository: widget.repository,
         child: MaterialApp(
-          title: 'RijksBook',
+          title: appName,
           theme: ThemeData.dark(),
           home: widget.home ?? const HomePage(),
         ),
