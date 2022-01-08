@@ -17,7 +17,7 @@ Art generateArtModel(String id, {String title = 'Lorem Ipsum'}) => Art(
       principalOrFirstMaker: 'Lorem Ipsum',
       headerImage: _dummyArtImage,
       webImage: _dummyArtImage,
-      url: 'https://google.com',
+      links: const ArtLinks(web: 'https://google.com'),
     );
 
-ArtImage get _dummyArtImage => ArtImage(guid: 'id', url: 'imageUrl', width: 150, height: 150);
+ArtImage get _dummyArtImage => const ArtImage(guid: 'id', url: 'imageUrl', width: 150, height: 150);
