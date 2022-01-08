@@ -3,11 +3,49 @@ import 'package:rijksbook/domain.dart';
 
 class MockRijksRepository extends Mock implements RijksRepository {}
 
-Art get dummyArtModel => generateArtModel('id');
+Art get dummyArtModel => _generateArtModel('id');
 
-List<Art> get dummyArtModelList => List<Art>.generate(20, (int index) => generateArtModel('$index'));
+ArtDetail get dummyArtDetailModel => ArtDetail(
+      objectNumber: 'id',
+      id: 'id',
+      hasImage: true,
+      showImage: true,
+      longTitle: 'Lorem Ipsum ' * 10,
+      title: 'Lorem Ipsum ' * 5,
+      principalOrFirstMaker: 'Lorem Ipsum',
+      webImage: _dummyArtImage,
+      subTitle: '',
+      principalMakers: const <ArtMaker>[],
+      label: ArtLabel(date: DateTime(1100)),
+      plaqueDescriptionEnglish: '',
+      principalMaker: '',
+      materials: const <String>[],
+      physicalProperties: const <String>[],
+      dating: const ArtDating(
+        period: 1100,
+        yearEarly: 1100,
+        presentingDate: 'c. 1100',
+        yearLate: 1100,
+        sortingDate: 1100,
+      ),
+      objectCollection: const <String>[],
+      historicalPersons: const <String>[],
+      physicalMedium: '',
+      titles: const <String>[],
+      colors: const <ArtColor>[],
+      normalizedColors: const <ArtColor>[],
+      techniques: const <String>[],
+      objectTypes: const <String>[],
+      scLabelLine: '',
+      dimensions: const <ArtDimension>[],
+      productionPlaces: const <String>[],
+      documentation: const <String>[],
+      description: '',
+    );
 
-Art generateArtModel(String id, {String title = 'Lorem Ipsum'}) => Art(
+List<Art> get dummyArtModelList => List<Art>.generate(20, (int index) => _generateArtModel('$index'));
+
+Art _generateArtModel(String id, {String title = 'Lorem Ipsum'}) => Art(
       objectNumber: id,
       id: id,
       hasImage: true,

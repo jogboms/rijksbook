@@ -9,10 +9,12 @@ environment:
   sdk: ">=2.15.0 <3.0.0"
 
 dependencies:
+  cached_network_image: ^3.2.0
   clock:
   cupertino_icons: ^1.0.4
   flutter:
     sdk: flutter
+  flutter_inappwebview: ^5.3.2
   freezed_annotation:
   http:
   json_annotation: ^4.4.0

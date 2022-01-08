@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rijksbook/constants.dart';
 import 'package:rijksbook/domain.dart';
 import 'package:rijksbook/provider.dart';
 import 'package:rijksbook/widgets.dart';
@@ -20,13 +21,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) => Scaffold(
         body: CustomScrollView(
           slivers: <Widget>[
-            const SliverAppBar(title: Text('RijksBook'), pinned: true),
+            const SliverAppBar(title: Text(appName), pinned: true),
             FutureBuilder<List<Art>>(
               future: _future,
               builder: (BuildContext context, AsyncSnapshot<List<Art>> snapshot) {
                 final List<Art>? items = snapshot.data;
                 if (items == null) {
-                  return const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
+                  return const SliverToBoxAdapter(child: LoadingSpinner());
                 }
 
                 return SliverPadding(

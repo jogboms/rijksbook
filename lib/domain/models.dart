@@ -27,6 +27,7 @@ class ArtDetail with _$ArtDetail {
     required String id,
     required String objectNumber,
     required List<ArtColor> colors,
+    required List<ArtColor> normalizedColors,
     required String title,
     required List<String> titles,
     required String longTitle,
@@ -42,6 +43,8 @@ class ArtDetail with _$ArtDetail {
     required String? plaqueDescriptionEnglish,
     required List<String> materials,
     required List<String> productionPlaces,
+    required List<String> techniques,
+    required List<String> physicalProperties,
     required bool hasImage,
     required bool showImage,
     required List<String> historicalPersons,
@@ -60,6 +63,10 @@ class ArtColor with _$ArtColor {
   const factory ArtColor({required double percentage, required String hex}) = _ArtColor;
 
   factory ArtColor.fromJson(Map<String, dynamic> json) => _$ArtColorFromJson(json);
+}
+
+extension ArtColorExtension on ArtColor {
+  int? get hexAsInt => int.tryParse('ff${hex.replaceAll('#', '').trim()}', radix: 16);
 }
 
 @freezed
@@ -81,6 +88,7 @@ class ArtDimension with _$ArtDimension {
     required String unit,
     required String type,
     @JsonKey(fromJson: stringToDoubleParser) required double value,
+    String? part,
   }) = _ArtDimension;
 
   factory ArtDimension.fromJson(Map<String, dynamic> json) => _$ArtDimensionFromJson(json);
@@ -89,10 +97,10 @@ class ArtDimension with _$ArtDimension {
 @freezed
 class ArtLabel with _$ArtLabel {
   const factory ArtLabel({
-    required String? title,
-    required String? makerLine,
-    required String? description,
-    required String? notes,
+    String? title,
+    String? makerLine,
+    String? description,
+    String? notes,
     required DateTime date,
   }) = _ArtLabel;
 
@@ -106,23 +114,31 @@ class ArtLinks with _$ArtLinks {
   factory ArtLinks.fromJson(Map<String, dynamic> json) => _$ArtLinksFromJson(json);
 }
 
+extension ArtLinksExtension on ArtLinks {
+  String? get url => web ?? self ?? search;
+}
+
 @freezed
 class ArtMaker with _$ArtMaker {
   const factory ArtMaker({
     required String name,
     required String unFixedName,
-    required String? placeOfBirth,
+    String? placeOfBirth,
     @JsonKey(fromJson: stringToDateParser) required DateTime dateOfBirth,
-    @JsonKey(fromJson: stringToDateNullableParser) required DateTime? dateOfDeath,
-    required String? placeOfDeath,
+    @JsonKey(fromJson: stringToDateNullableParser) DateTime? dateOfDeath,
+    String? placeOfDeath,
     required List<String> occupation,
     required List<String> roles,
-    required String? nationality,
-    required String? biography,
+    String? nationality,
+    String? biography,
     required String labelDesc,
   }) = _ArtMaker;
 
   factory ArtMaker.fromJson(Map<String, dynamic> json) => _$ArtMakerFromJson(json);
+}
+
+extension ArtMakerExtension on ArtMaker {
+  String get initials => unFixedName.split(' ').take(2).map((String element) => element[0].toUpperCase()).join('.');
 }
 
 @freezed
@@ -131,6 +147,10 @@ class ArtImage with _$ArtImage {
       _ArtImage;
 
   factory ArtImage.fromJson(Map<String, dynamic> json) => _$ArtImageFromJson(json);
+}
+
+extension ArtImageExtension on ArtImage {
+  double get aspectRatio => width / height;
 }
 
 @visibleForTesting
