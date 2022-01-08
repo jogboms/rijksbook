@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rijksbook/constants.dart';
 import 'package:rijksbook/domain.dart';
+import 'package:rijksbook/widgets.dart';
 
 class ArtGridItem extends StatelessWidget {
   const ArtGridItem({Key? key, required this.art, required this.onPressed}) : super(key: key);
@@ -21,7 +22,10 @@ class ArtGridItem extends StatelessWidget {
           child: Stack(
             children: <Widget>[
               Positioned.fill(
-                child: Ink.image(image: NetworkImage(art.webImage.url), fit: BoxFit.cover),
+                child: CachedImage(
+                  url: art.webImage.url,
+                  builder: (ImageProvider<Object> provider) => Ink.image(image: provider, fit: BoxFit.cover),
+                ),
               ),
               Positioned(
                 top: 0,
