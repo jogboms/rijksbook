@@ -1,5 +1,42 @@
+import 'dart:convert';
+
 import 'package:clock/clock.dart';
+import 'package:http/http.dart';
 import 'package:rijksbook/domain.dart';
+
+class HttpRijksRepository implements RijksRepository {
+  HttpRijksRepository(this.client, {required this.apiKey});
+
+  final Client client;
+  final String apiKey;
+
+  static String baseUrl = 'https://www.rijksmuseum.nl/api/en/collection';
+  static int itemsPerPage = 30;
+
+  @override
+  Future<ArtDetail> fetch(String objectNumber) async {
+    try {
+      final Response response = await client.get(Uri.parse('$baseUrl/$objectNumber?key=$apiKey'));
+      final dynamic data = json.decode(response.body);
+      return ArtDetail.fromJson(data['artObject'] as Map<String, dynamic>);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Art>> fetchAll({required int page}) async {
+    try {
+      final Response response = await client.get(Uri.parse('$baseUrl?key=$apiKey&ps=$itemsPerPage&p=$page'));
+      final dynamic data = json.decode(response.body);
+      return <Art>[
+        for (final Map<String, dynamic> item in data['artObjects']) Art.fromJson(item),
+      ];
+    } catch (e) {
+      rethrow;
+    }
+  }
+}
 
 class DummyRijksRepository implements RijksRepository {
   @override
