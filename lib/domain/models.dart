@@ -13,8 +13,8 @@ class Art with _$Art {
     required String principalOrFirstMaker,
     required bool hasImage,
     required bool showImage,
-    required ArtImage webImage,
-    required ArtImage headerImage,
+    required ArtImage? webImage,
+    required ArtImage? headerImage,
     required ArtLinks links,
   }) = _Art;
 
@@ -51,7 +51,7 @@ class ArtDetail with _$ArtDetail {
     required List<String> documentation,
     required List<ArtDimension> dimensions,
     required String physicalMedium,
-    required ArtImage webImage,
+    required ArtImage? webImage,
     required ArtDating dating,
   }) = _ArtDetail;
 

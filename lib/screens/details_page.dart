@@ -29,9 +29,9 @@ class _DetailsPageState extends State<DetailsPage> {
               actions: <Widget>[ArtLinksButton(links: widget.art.links)],
               pinned: true,
               stretch: true,
-              expandedHeight: widget.art.headerImage.height / MediaQuery.of(context).devicePixelRatio,
+              expandedHeight: (widget.art.headerImage?.height ?? 0) / MediaQuery.of(context).devicePixelRatio,
               flexibleSpace: FlexibleSpaceBar(
-                background: widget.art.headerImage.url != null ? CachedImage(url: widget.art.headerImage.url!) : null,
+                background: widget.art.headerImage?.url != null ? CachedImage(url: widget.art.headerImage!.url!) : null,
                 stretchModes: const <StretchMode>[StretchMode.zoomBackground],
                 collapseMode: CollapseMode.parallax,
               ),
@@ -93,9 +93,9 @@ class _DataView extends StatelessWidget {
         ),
         AppSpacing.v16,
         Text(data.scLabelLine, style: textTheme.caption),
-        if (data.webImage.url != null) ...<Widget>[
+        if (data.webImage?.url != null) ...<Widget>[
           AppSpacing.v4,
-          AspectRatio(aspectRatio: data.webImage.aspectRatio, child: CachedImage(url: data.webImage.url!)),
+          AspectRatio(aspectRatio: data.webImage!.aspectRatio, child: CachedImage(url: data.webImage!.url!)),
           AppSpacing.v4,
         ],
         ArtColorRow(colors: data.normalizedColors),
