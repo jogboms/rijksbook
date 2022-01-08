@@ -21,10 +21,10 @@ class ArtGridItem extends StatelessWidget {
           onTap: onPressed,
           child: Stack(
             children: <Widget>[
-              if (art.webImage.url != null)
+              if (art.webImage?.url != null)
                 Positioned.fill(
                   child: CachedImage(
-                    url: art.webImage.url!,
+                    url: art.webImage!.url!,
                     builder: (ImageProvider<Object> provider) => Ink.image(image: provider, fit: BoxFit.cover),
                   ),
                 ),
