@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:clock/clock.dart';
 import 'package:http/http.dart';
+import 'package:rijksbook/cache.dart';
 import 'package:rijksbook/domain.dart';
 
 class HttpRijksRepository implements RijksRepository {
@@ -9,6 +10,7 @@ class HttpRijksRepository implements RijksRepository {
 
   final Client client;
   final String apiKey;
+  final Cache<String, ArtDetail> cache = InMemoryCache<String, ArtDetail>(itemsPerPage);
 
   static String baseUrl = 'https://www.rijksmuseum.nl/api/en/collection';
   static int itemsPerPage = 30;
@@ -16,9 +18,12 @@ class HttpRijksRepository implements RijksRepository {
   @override
   Future<ArtDetail> fetch(String objectNumber) async {
     try {
+      if (cache.contains(objectNumber)) {
+        return cache.get(objectNumber)!;
+      }
       final Response response = await client.get(Uri.parse('$baseUrl/$objectNumber?key=$apiKey'));
       final dynamic data = json.decode(response.body);
-      return ArtDetail.fromJson(data['artObject'] as Map<String, dynamic>);
+      return cache.set(objectNumber, ArtDetail.fromJson(data['artObject'] as Map<String, dynamic>));
     } catch (e) {
       rethrow;
     }
