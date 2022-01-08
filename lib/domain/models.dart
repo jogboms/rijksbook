@@ -114,6 +114,10 @@ class ArtLinks with _$ArtLinks {
   factory ArtLinks.fromJson(Map<String, dynamic> json) => _$ArtLinksFromJson(json);
 }
 
+extension ArtLinksExtension on ArtLinks {
+  String? get url => web ?? self ?? search;
+}
+
 @freezed
 class ArtMaker with _$ArtMaker {
   const factory ArtMaker({
