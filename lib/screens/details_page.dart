@@ -26,14 +26,7 @@ class _DetailsPageState extends State<DetailsPage> {
           slivers: <Widget>[
             SliverAppBar(
               title: Text(widget.art.title, maxLines: 2, overflow: TextOverflow.ellipsis),
-              actions: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    // TODO
-                  },
-                  icon: const Icon(Icons.link),
-                )
-              ],
+              actions: <Widget>[ArtLinksButton(links: widget.art.links)],
               pinned: true,
               stretch: true,
               expandedHeight: widget.art.headerImage.height / MediaQuery.of(context).devicePixelRatio,
