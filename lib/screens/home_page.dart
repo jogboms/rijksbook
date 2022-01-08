@@ -4,6 +4,7 @@ import 'package:rijksbook/domain.dart';
 import 'package:rijksbook/provider.dart';
 import 'package:rijksbook/widgets.dart';
 
+import 'data_controller.dart';
 import 'details_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,12 +15,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late final RijksRepository repo = context.repository;
-  late final Future<List<Art>> _future = repo.fetchAll(page: 1);
+  late final PagedDataController controller = PagedDataController(context.repository);
 
   static const double overScrollOffset = 100;
 
   LoadingStatus _loadingStatus = LoadingStatus.initial;
+
+  @override
+  void initState() {
+    controller.fetch();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -28,14 +34,21 @@ class _HomePageState extends State<HomePage> {
           child: CustomScrollView(
             slivers: <Widget>[
               const SliverAppBar(title: Text(appName), pinned: true),
-              FutureBuilder<List<Art>>(
-                future: _future,
-                builder: (BuildContext context, AsyncSnapshot<List<Art>> snapshot) {
-                  final List<Art>? items = snapshot.data;
-                  if (items == null) {
-                    return const SliverToBoxAdapter(child: LoadingSpinner());
+              AnimatedBuilder(
+                animation: controller,
+                builder: (BuildContext context, _) {
+                  if (_loadingStatus == LoadingStatus.initial) {
+                    if (controller.isLoading) {
+                      return const SliverFillRemaining(child: LoadingSpinner());
+                    }
+                    if (controller.hasError) {
+                      return SliverFillRemaining(
+                        child: Center(child: Text(controller.error!.message)),
+                      );
+                    }
                   }
 
+                  final List<Art> items = controller.data;
                   return SliverPadding(
                     padding: const EdgeInsets.all(8),
                     sliver: SliverGrid(
@@ -64,9 +77,7 @@ class _HomePageState extends State<HomePage> {
         ),
       );
 
-  void _onLoadMore() async {
-    _loadingStatus = LoadingStatus.idle;
-  }
+  void _onLoadMore() => controller.fetch().then((_) => _loadingStatus = LoadingStatus.idle);
 
   void _onOverscroll() {
     if (_loadingStatus != LoadingStatus.loading) {
