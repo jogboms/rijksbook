@@ -52,9 +52,7 @@ class PagedDataController extends DataController<List<Art>> {
   Future<void> next() async {
     final int page = _page + 1;
     await _fetch(page);
-    if (!hasError) {
-      _page = page;
-    }
+    _page = page;
   }
 
   @override

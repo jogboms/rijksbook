@@ -76,6 +76,29 @@ void main() {
         expect(controller.hasError, false);
       });
 
+      test('should move to next page regardless of error', () async {
+        int requestCount = 0;
+        final PagedDataController controller = PagedDataController(
+          ({required int page}) async {
+            if (requestCount == 1) {
+              throw 'Error';
+            }
+            requestCount++;
+            return dummyArtModelList;
+          },
+        );
+
+        final Recorder recorder = Recorder();
+        controller.addListener(() => recorder(controller.state));
+
+        await controller.fetch();
+        await controller.next();
+
+        expect(controller.data, dummyArtModelList);
+        expect(controller.page, 2);
+        expect(controller.hasError, true);
+      });
+
       test('can handle errors', () async {
         final PagedDataController controller = PagedDataController(
           ({required int page}) async => throw 'Error',
@@ -171,13 +194,13 @@ void main() {
 
         expect(recorder.states, containsAllInOrder(expectedConnectionStatesInOrder));
         expect(controller.data, <Art>[...dummyArtModelList, ...dummyArtModelList]);
-        expect(controller.page, 2);
+        expect(controller.page, 3);
         expect(controller.hasError, true);
         expect(controller.error!.message, 'Error');
 
         await controller.retry();
 
-        expect(controller.page, 2);
+        expect(controller.page, 3);
         expect(controller.hasError, true);
       });
     });
