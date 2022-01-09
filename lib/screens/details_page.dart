@@ -4,6 +4,8 @@ import 'package:rijksbook/domain.dart';
 import 'package:rijksbook/provider.dart';
 import 'package:rijksbook/widgets.dart';
 
+import 'data_controller.dart';
+
 class DetailsPage extends StatefulWidget {
   const DetailsPage({Key? key, required this.art}) : super(key: key);
 
@@ -17,8 +19,19 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
-  late final RijksRepository repo = context.repository;
-  late final Future<ArtDetail> _future = repo.fetch(widget.art.objectNumber);
+  late final DetailDataController controller = DetailDataController(context.repository, id: widget.art.objectNumber);
+
+  @override
+  void initState() {
+    controller.fetch();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -36,12 +49,33 @@ class _DetailsPageState extends State<DetailsPage> {
                 collapseMode: CollapseMode.parallax,
               ),
             ),
-            FutureBuilder<ArtDetail>(
-              future: _future,
-              builder: (BuildContext context, AsyncSnapshot<ArtDetail> snapshot) {
-                final ArtDetail? data = snapshot.data;
+            AnimatedBuilder(
+              animation: controller,
+              builder: (BuildContext context, _) {
+                if (controller.isLoading) {
+                  return const SliverFillRemaining(child: LoadingSpinner());
+                }
+                if (controller.hasError) {
+                  return SliverFillRemaining(
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text(controller.error!.message),
+                          AppSpacing.v4,
+                          TextButton(
+                            onPressed: () => controller.fetch(retry: true),
+                            child: const Text('RETRY'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                final ArtDetail? data = controller.data;
                 if (data == null) {
-                  return const SliverToBoxAdapter(child: LoadingSpinner());
+                  return const SliverFillRemaining(child: Center(child: Text('Could not find art work? :(')));
                 }
 
                 return SliverPadding(
