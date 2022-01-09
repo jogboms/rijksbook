@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> {
         ),
       );
 
-  void _onLoadMore() => controller.fetch().then((_) => _loadingStatus = LoadingStatus.idle);
+  void _onLoadMore() => controller.next().then((_) => _loadingStatus = LoadingStatus.idle);
 
   void _onOverscroll() {
     if (_loadingStatus != LoadingStatus.loading) {

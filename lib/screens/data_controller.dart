@@ -40,6 +40,14 @@ class PagedDataController extends DataController<List<Art>> {
 
   @override
   Future<void> fetch() async {
+    const int page = 1;
+    await _fetch(page, true);
+    if (!hasError) {
+      _page = page;
+    }
+  }
+
+  Future<void> next() async {
     final int page = _page + 1;
     await _fetch(page);
     if (!hasError) {
@@ -50,11 +58,11 @@ class PagedDataController extends DataController<List<Art>> {
   @override
   Future<void> retry() => _fetch(_page);
 
-  Future<void> _fetch(int page) async {
+  Future<void> _fetch(int page, [bool clear = false]) async {
     state = ConnectionState.waiting;
     try {
       final List<Art> items = await _source(page: _page);
-      _data = <Art>[...data, ...items];
+      _data = <Art>[if (!clear) ...data, ...items];
       _error = null;
       state = ConnectionState.done;
     } catch (e, stackTrace) {
