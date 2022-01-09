@@ -14,7 +14,7 @@ class ArtDimensionItem extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 2),
       child: Text.rich(
         TextSpan(children: <TextSpan>[
-          TextSpan(text: '${dimension.type.toUpperCase()}: ', style: textTheme.overline),
+          TextSpan(text: '${(dimension.type ?? 'N/A').toUpperCase()}: ', style: textTheme.overline),
           TextSpan(text: '${dimension.value}${dimension.unit}'),
           if (dimension.part != null) TextSpan(text: ' (${dimension.part})', style: textTheme.overline),
         ]),

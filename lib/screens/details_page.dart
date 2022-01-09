@@ -72,10 +72,12 @@ class _DataView extends StatelessWidget {
         AppSpacing.v4,
         Text(data.subTitle, style: textTheme.subtitle1),
         AppSpacing.v8,
-        Text(data.physicalMedium, style: textTheme.caption?.copyWith(fontSize: 14)),
-        AppSpacing.v8,
+        if (data.physicalMedium != null) ...<Widget>[
+          Text(data.physicalMedium!, style: textTheme.caption?.copyWith(fontSize: 14)),
+          AppSpacing.v8,
+        ],
         Text(
-          '# ' + data.objectCollection.join(', #'),
+          '# ' + <String>[...data.objectTypes, ...data.objectCollection].join(', #'),
           style: textTheme.caption?.copyWith(color: Colors.blue),
         ),
         AppSpacing.v16,
@@ -88,7 +90,7 @@ class _DataView extends StatelessWidget {
         ]),
         AppSpacing.v10,
         Text(
-          data.label.description ?? data.plaqueDescriptionEnglish ?? data.description,
+          data.label.description ?? data.plaqueDescriptionEnglish ?? data.description ?? 'N/A',
           style: textTheme.bodyText1?.copyWith(height: 1.5),
         ),
         AppSpacing.v16,
@@ -104,11 +106,13 @@ class _DataView extends StatelessWidget {
         AppSpacing.v16,
         const Divider(),
         AppSpacing.v16,
-        const _SectionHeaderText('Dimensions'),
-        AppSpacing.v8,
-        for (final ArtDimension dimension in data.dimensions)
-          ArtDimensionItem(key: Key(dimension.toString()), dimension: dimension),
-        AppSpacing.v12,
+        if (data.dimensions.isNotEmpty) ...<Widget>[
+          const _SectionHeaderText('Dimensions'),
+          AppSpacing.v8,
+          for (final ArtDimension dimension in data.dimensions)
+            ArtDimensionItem(key: Key(dimension.toString()), dimension: dimension),
+          AppSpacing.v12,
+        ],
         const _SectionHeaderText('Principal makers'),
         AppSpacing.v8,
         for (final ArtMaker maker in data.principalMakers) ArtMakerItem(key: Key(maker.name), maker: maker),

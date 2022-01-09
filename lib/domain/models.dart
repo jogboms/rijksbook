@@ -34,13 +34,13 @@ class ArtDetail with _$ArtDetail {
     required String subTitle,
     required String scLabelLine,
     required ArtLabel label,
-    required String description,
+    String? description,
     required List<String> objectTypes,
     required List<String> objectCollection,
     required String principalMaker,
     required String principalOrFirstMaker,
     required List<ArtMaker> principalMakers,
-    required String? plaqueDescriptionEnglish,
+    String? plaqueDescriptionEnglish,
     required List<String> materials,
     required List<String> productionPlaces,
     required List<String> techniques,
@@ -50,8 +50,8 @@ class ArtDetail with _$ArtDetail {
     required List<String> historicalPersons,
     required List<String> documentation,
     required List<ArtDimension> dimensions,
-    required String physicalMedium,
-    required ArtImage? webImage,
+    String? physicalMedium,
+    ArtImage? webImage,
     required ArtDating dating,
   }) = _ArtDetail;
 
@@ -86,7 +86,7 @@ class ArtDating with _$ArtDating {
 class ArtDimension with _$ArtDimension {
   const factory ArtDimension({
     required String unit,
-    required String type,
+    String? type,
     @JsonKey(fromJson: stringToDoubleParser) required double value,
     String? part,
   }) = _ArtDimension;
@@ -101,7 +101,7 @@ class ArtLabel with _$ArtLabel {
     String? makerLine,
     String? description,
     String? notes,
-    required DateTime date,
+    DateTime? date,
   }) = _ArtLabel;
 
   factory ArtLabel.fromJson(Map<String, dynamic> json) => _$ArtLabelFromJson(json);
@@ -124,7 +124,7 @@ class ArtMaker with _$ArtMaker {
     required String name,
     required String unFixedName,
     String? placeOfBirth,
-    @JsonKey(fromJson: stringToDateParser) required DateTime dateOfBirth,
+    @JsonKey(fromJson: stringToDateNullableParser) DateTime? dateOfBirth,
     @JsonKey(fromJson: stringToDateNullableParser) DateTime? dateOfDeath,
     String? placeOfDeath,
     required List<String> occupation,
