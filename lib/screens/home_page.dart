@@ -15,7 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late final PagedDataController controller = PagedDataController(context.repository);
+  late final PagedDataController controller = PagedDataController(context.repository.fetchAll);
 
   static const double overScrollOffset = 100;
 

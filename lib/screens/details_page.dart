@@ -19,7 +19,8 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
-  late final DetailDataController controller = DetailDataController(context.repository, id: widget.art.objectNumber);
+  late final DetailDataController controller =
+      DetailDataController(context.repository.fetch, id: widget.art.objectNumber);
 
   @override
   void initState() {

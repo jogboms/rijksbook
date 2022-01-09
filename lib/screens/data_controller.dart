@@ -28,9 +28,9 @@ abstract class DataController<T> with ChangeNotifier {
 }
 
 class PagedDataController extends DataController<List<Art>> {
-  PagedDataController(this.repo) : super(List<Art>.empty(growable: true));
+  PagedDataController(this.source) : super(const <Art>[]);
 
-  final RijksRepository repo;
+  final Future<List<Art>> Function({required int page}) source;
 
   int _page = 0;
 
@@ -39,8 +39,8 @@ class PagedDataController extends DataController<List<Art>> {
     state = ConnectionState.waiting;
     try {
       final int page = retry ? _page : _page + 1;
-      final List<Art> items = await repo.fetchAll(page: _page);
-      _data = data..addAll(items);
+      final List<Art> items = await source(page: _page);
+      _data = <Art>[...data, ...items];
       _page = page;
       _error = null;
       state = ConnectionState.done;
@@ -52,16 +52,16 @@ class PagedDataController extends DataController<List<Art>> {
 }
 
 class DetailDataController extends DataController<ArtDetail?> {
-  DetailDataController(this.repo, {required this.id}) : super(null);
+  DetailDataController(this.source, {required this.id}) : super(null);
 
-  final RijksRepository repo;
+  final Future<ArtDetail> Function(String id) source;
   final String id;
 
   @override
   Future<void> fetch({bool retry = false}) async {
     state = ConnectionState.waiting;
     try {
-      _data = await repo.fetch(id);
+      _data = await source(id);
       _error = null;
       state = ConnectionState.done;
     } catch (e, stackTrace) {
