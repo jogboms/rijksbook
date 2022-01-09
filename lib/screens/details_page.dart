@@ -64,10 +64,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         children: <Widget>[
                           Text(controller.error!.message),
                           AppSpacing.v4,
-                          TextButton(
-                            onPressed: () => controller.fetch(retry: true),
-                            child: const Text('RETRY'),
-                          ),
+                          TextButton(onPressed: controller.retry, child: const Text('RETRY')),
                         ],
                       ),
                     ),
