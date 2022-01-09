@@ -22,6 +22,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late final PagedDataController controller = PagedDataController(context.repository.fetchAll);
 
+  final ValueNotifier<bool> singleColumn = ValueNotifier<bool>(true);
+
+  late final Listenable combinedViewModel = Listenable.merge(<Listenable>[controller, singleColumn]);
+
   static const double overScrollOffset = 100;
 
   LoadingStatus _loadingStatus = LoadingStatus.initial;
@@ -38,9 +42,21 @@ class _HomePageState extends State<HomePage> {
           onNotification: _onScrollNotification,
           child: CustomScrollView(
             slivers: <Widget>[
-              const SliverAppBar(title: Text(appName), pinned: true),
+              SliverAppBar(
+                title: const Text(appName),
+                pinned: true,
+                actions: <Widget>[
+                  ValueListenableBuilder<bool>(
+                    valueListenable: singleColumn,
+                    builder: (_, bool value, __) => IconButton(
+                      onPressed: () => singleColumn.value = !value,
+                      icon: Icon(value ? Icons.looks_one : Icons.looks_two),
+                    ),
+                  )
+                ],
+              ),
               AnimatedBuilder(
-                animation: controller,
+                animation: combinedViewModel,
                 builder: (BuildContext context, _) {
                   if (_loadingStatus == LoadingStatus.initial) {
                     if (controller.isLoading) {
@@ -67,8 +83,8 @@ class _HomePageState extends State<HomePage> {
                   return SliverPadding(
                     padding: const EdgeInsets.all(8),
                     sliver: SliverGrid(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: singleColumn.value ? 1 : 2,
                         crossAxisSpacing: 8,
                         mainAxisSpacing: 8,
                       ),
