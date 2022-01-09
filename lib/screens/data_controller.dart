@@ -24,24 +24,35 @@ abstract class DataController<T> with ChangeNotifier {
 
   bool get hasError => _state == ConnectionState.done && error != null;
 
-  Future<void> fetch({bool retry = false});
+  Future<void> fetch();
+
+  Future<void> retry();
 }
 
 class PagedDataController extends DataController<List<Art>> {
-  PagedDataController(this.source) : super(const <Art>[]);
+  PagedDataController(this._source) : super(const <Art>[]);
 
-  final Future<List<Art>> Function({required int page}) source;
+  final Future<List<Art>> Function({required int page}) _source;
 
   int _page = 0;
 
   @override
-  Future<void> fetch({bool retry = false}) async {
+  Future<void> fetch() async {
+    final int page = _page + 1;
+    await _fetch(page);
+    if (!hasError) {
+      _page = page;
+    }
+  }
+
+  @override
+  Future<void> retry() => _fetch(_page);
+
+  Future<void> _fetch(int page) async {
     state = ConnectionState.waiting;
     try {
-      final int page = retry ? _page : _page + 1;
-      final List<Art> items = await source(page: _page);
+      final List<Art> items = await _source(page: _page);
       _data = <Art>[...data, ...items];
-      _page = page;
       _error = null;
       state = ConnectionState.done;
     } catch (e, stackTrace) {
@@ -52,16 +63,16 @@ class PagedDataController extends DataController<List<Art>> {
 }
 
 class DetailDataController extends DataController<ArtDetail?> {
-  DetailDataController(this.source, {required this.id}) : super(null);
+  DetailDataController(this._source, {required this.id}) : super(null);
 
-  final Future<ArtDetail> Function(String id) source;
+  final Future<ArtDetail> Function(String id) _source;
   final String id;
 
   @override
-  Future<void> fetch({bool retry = false}) async {
+  Future<void> fetch() async {
     state = ConnectionState.waiting;
     try {
-      _data = await source(id);
+      _data = await _source(id);
       _error = null;
       state = ConnectionState.done;
     } catch (e, stackTrace) {
@@ -69,6 +80,9 @@ class DetailDataController extends DataController<ArtDetail?> {
       state = ConnectionState.done;
     }
   }
+
+  @override
+  Future<void> retry() => fetch();
 }
 
 class ControllerException implements Exception {

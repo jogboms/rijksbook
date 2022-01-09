@@ -49,10 +49,7 @@ class _HomePageState extends State<HomePage> {
                             children: <Widget>[
                               Text(controller.error!.message),
                               AppSpacing.v4,
-                              TextButton(
-                                onPressed: () => controller.fetch(retry: true),
-                                child: const Text('RETRY'),
-                              ),
+                              TextButton(onPressed: controller.retry, child: const Text('RETRY')),
                             ],
                           ),
                         ),
@@ -107,10 +104,7 @@ class _HomePageState extends State<HomePage> {
                                         children: <Widget>[
                                           Expanded(child: Text(controller.error!.message)),
                                           AppSpacing.h4,
-                                          TextButton(
-                                            onPressed: () => controller.fetch(retry: true),
-                                            child: const Text('RETRY'),
-                                          ),
+                                          TextButton(onPressed: controller.retry, child: const Text('RETRY')),
                                         ],
                                       ),
                                     )
