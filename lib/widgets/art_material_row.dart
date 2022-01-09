@@ -12,7 +12,7 @@ class ArtMaterialRow extends StatelessWidget {
     return Wrap(
       spacing: 4,
       children: <Widget>[
-        for (final String material in materials)
+        for (final String material in Set<String>.of(materials))
           Chip(key: Key(material), label: Text(material), labelStyle: textTheme.caption),
       ],
     );
