@@ -10,6 +10,8 @@ abstract class DataController<T> with ChangeNotifier {
   ControllerException? get error => _error;
   ControllerException? _error;
 
+  @visibleForTesting
+  ConnectionState get state => _state;
   ConnectionState _state = ConnectionState.none;
 
   set state(ConnectionState newState) {
