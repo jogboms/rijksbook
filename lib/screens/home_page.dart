@@ -10,6 +10,11 @@ import 'details_page.dart';
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
+  @visibleForTesting
+  static const Key overscrollBoxKey = Key('overscroll-box');
+  @visibleForTesting
+  static const Key errorBoxKey = Key('error-box');
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -44,6 +49,7 @@ class _HomePageState extends State<HomePage> {
                     if (controller.hasError) {
                       return SliverFillRemaining(
                         child: Center(
+                          key: HomePage.errorBoxKey,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
@@ -82,9 +88,10 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               SliverToBoxAdapter(
+                key: HomePage.overscrollBoxKey,
                 child: AnimatedBuilder(
                   animation: controller,
-                  child: const SizedBox.shrink(),
+                  child: const SizedBox(height: overScrollOffset / 3),
                   builder: (BuildContext context, Widget? child) {
                     if (_loadingStatus == LoadingStatus.initial || !(controller.isLoading || controller.hasError)) {
                       return child!;
@@ -99,6 +106,7 @@ class _HomePageState extends State<HomePage> {
                               ? const LoadingSpinner()
                               : controller.hasError
                                   ? Padding(
+                                      key: HomePage.errorBoxKey,
                                       padding: const EdgeInsets.all(8),
                                       child: Row(
                                         children: <Widget>[
