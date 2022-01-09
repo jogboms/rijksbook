@@ -51,6 +51,26 @@ class PagedDataController extends DataController<List<Art>> {
   }
 }
 
+class DetailDataController extends DataController<ArtDetail?> {
+  DetailDataController(this.repo, {required this.id}) : super(null);
+
+  final RijksRepository repo;
+  final String id;
+
+  @override
+  Future<void> fetch({bool retry = false}) async {
+    state = ConnectionState.waiting;
+    try {
+      _data = await repo.fetch(id);
+      _error = null;
+      state = ConnectionState.done;
+    } catch (e, stackTrace) {
+      _error = ControllerException(e.toString(), stackTrace);
+      state = ConnectionState.done;
+    }
+  }
+}
+
 class ControllerException implements Exception {
   const ControllerException(this.message, this.stackTrace);
 
