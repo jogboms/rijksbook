@@ -1,15 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:rijksbook/domain.dart';
 
-class PagedDataController with ChangeNotifier {
-  PagedDataController(this.repo);
+abstract class DataController<T> with ChangeNotifier {
+  DataController(this._data);
 
-  final RijksRepository repo;
-
-  int _page = 0;
-
-  List<Art> get data => _data;
-  List<Art> _data = List<Art>.empty(growable: true);
+  T get data => _data;
+  T _data;
 
   ControllerException? get error => _error;
   ControllerException? _error;
@@ -28,6 +24,17 @@ class PagedDataController with ChangeNotifier {
 
   bool get hasError => _state == ConnectionState.done && error != null;
 
+  Future<void> fetch({bool retry = false});
+}
+
+class PagedDataController extends DataController<List<Art>> {
+  PagedDataController(this.repo) : super(List<Art>.empty(growable: true));
+
+  final RijksRepository repo;
+
+  int _page = 0;
+
+  @override
   Future<void> fetch({bool retry = false}) async {
     state = ConnectionState.waiting;
     try {
