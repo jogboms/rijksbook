@@ -36,7 +36,9 @@ class PagedDataController extends DataController<List<Art>> {
 
   final Future<List<Art>> Function({required int page}) _source;
 
-  int _page = 0;
+  @visibleForTesting
+  int get page => _page;
+  int _page = 1;
 
   @override
   Future<void> fetch() async {
@@ -61,7 +63,7 @@ class PagedDataController extends DataController<List<Art>> {
   Future<void> _fetch(int page, [bool clear = false]) async {
     state = ConnectionState.waiting;
     try {
-      final List<Art> items = await _source(page: _page);
+      final List<Art> items = await _source(page: page);
       _data = <Art>[if (!clear) ...data, ...items];
       _error = null;
       state = ConnectionState.done;
