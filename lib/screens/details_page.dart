@@ -14,6 +14,9 @@ class DetailsPage extends StatefulWidget {
   static void go(BuildContext context, {required Art art}) => Navigator.of(context)
       .push<void>(MaterialPageRoute<void>(builder: (BuildContext context) => DetailsPage(art: art)));
 
+  @visibleForTesting
+  static const Key errorBoxKey = Key('error-box');
+
   @override
   _DetailsPageState createState() => _DetailsPageState();
 }
@@ -59,6 +62,7 @@ class _DetailsPageState extends State<DetailsPage> {
                 if (controller.hasError) {
                   return SliverFillRemaining(
                     child: Center(
+                      key: DetailsPage.errorBoxKey,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[

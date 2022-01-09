@@ -33,5 +33,70 @@ void main() {
         expect(find.byKey(Key(dummyArtModel.id)), findsOneWidget);
       });
     });
+
+    group('Error handling', () {
+      testWidgets('can handle initializing fetch error', (WidgetTester tester) async {
+        when(() => repository.fetch(any())).thenThrow(Exception('Error'));
+
+        await mockNetworkImages(() async {
+          await tester.pumpWidget(makeApp(home: DetailsPage(art: dummyArtModel), repository: repository));
+
+          await tester.pump();
+
+          expect(find.byKey(DetailsPage.errorBoxKey), findsOneWidget);
+          expect(find.text('Exception: Error'), findsOneWidget);
+        });
+      });
+    });
+
+    testWidgets('can handle initializing fetch error and retry', (WidgetTester tester) async {
+      int requestCount = 0;
+      when(() => repository.fetch(any())).thenAnswer((_) async {
+        if (requestCount == 0) {
+          requestCount++;
+          throw Exception('Error');
+        }
+        return dummyArtDetailModel;
+      });
+
+      await mockNetworkImages(() async {
+        await tester.pumpWidget(makeApp(home: DetailsPage(art: dummyArtModel), repository: repository));
+
+        await tester.pump();
+
+        expect(find.byKey(DetailsPage.errorBoxKey), findsOneWidget);
+
+        await tester.tap(find.widgetWithText(TextButton, 'RETRY'));
+
+        verify(() => repository.fetch(any())).called(2);
+      });
+    });
+
+    testWidgets('can handle initializing fetch error, retry and continue', (WidgetTester tester) async {
+      int requestCount = 0;
+      when(() => repository.fetch(any())).thenAnswer((_) async {
+        if (requestCount == 0) {
+          requestCount++;
+          throw Exception('Error');
+        }
+        return dummyArtDetailModel;
+      });
+
+      await mockNetworkImages(() async {
+        await tester.pumpWidget(makeApp(home: DetailsPage(art: dummyArtModel), repository: repository));
+
+        await tester.pump();
+
+        expect(find.byKey(DetailsPage.errorBoxKey), findsOneWidget);
+
+        await tester.tap(find.widgetWithText(TextButton, 'RETRY'));
+
+        verify(() => repository.fetch(any())).called(2);
+
+        await tester.pump();
+
+        expect(find.byKey(Key(dummyArtModel.id)), findsOneWidget);
+      });
+    });
   });
 }
