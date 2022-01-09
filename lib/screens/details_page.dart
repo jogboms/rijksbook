@@ -4,6 +4,8 @@ import 'package:rijksbook/domain.dart';
 import 'package:rijksbook/provider.dart';
 import 'package:rijksbook/widgets.dart';
 
+import 'data_controller.dart';
+
 class DetailsPage extends StatefulWidget {
   const DetailsPage({Key? key, required this.art}) : super(key: key);
 
@@ -12,13 +14,28 @@ class DetailsPage extends StatefulWidget {
   static void go(BuildContext context, {required Art art}) => Navigator.of(context)
       .push<void>(MaterialPageRoute<void>(builder: (BuildContext context) => DetailsPage(art: art)));
 
+  @visibleForTesting
+  static const Key errorBoxKey = Key('error-box');
+
   @override
   _DetailsPageState createState() => _DetailsPageState();
 }
 
 class _DetailsPageState extends State<DetailsPage> {
-  late final RijksRepository repo = context.repository;
-  late final Future<ArtDetail> _future = repo.fetch(widget.art.objectNumber);
+  late final DetailDataController controller =
+      DetailDataController(context.repository.fetch, id: widget.art.objectNumber);
+
+  @override
+  void initState() {
+    controller.fetch();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -29,19 +46,38 @@ class _DetailsPageState extends State<DetailsPage> {
               actions: <Widget>[ArtLinksButton(links: widget.art.links)],
               pinned: true,
               stretch: true,
-              expandedHeight: widget.art.headerImage.height / MediaQuery.of(context).devicePixelRatio,
+              expandedHeight: (widget.art.headerImage?.height ?? 0) / MediaQuery.of(context).devicePixelRatio,
               flexibleSpace: FlexibleSpaceBar(
-                background: CachedImage(url: widget.art.headerImage.url),
+                background: widget.art.headerImage?.url != null ? CachedImage(url: widget.art.headerImage!.url!) : null,
                 stretchModes: const <StretchMode>[StretchMode.zoomBackground],
                 collapseMode: CollapseMode.parallax,
               ),
             ),
-            FutureBuilder<ArtDetail>(
-              future: _future,
-              builder: (BuildContext context, AsyncSnapshot<ArtDetail> snapshot) {
-                final ArtDetail? data = snapshot.data;
+            AnimatedBuilder(
+              animation: controller,
+              builder: (BuildContext context, _) {
+                if (controller.isLoading) {
+                  return const SliverFillRemaining(child: LoadingSpinner());
+                }
+                if (controller.hasError) {
+                  return SliverFillRemaining(
+                    child: Center(
+                      key: DetailsPage.errorBoxKey,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text(controller.error!.message),
+                          AppSpacing.v4,
+                          TextButton(onPressed: controller.retry, child: const Text('RETRY')),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                final ArtDetail? data = controller.data;
                 if (data == null) {
-                  return const SliverToBoxAdapter(child: LoadingSpinner());
+                  return const SliverFillRemaining(child: Center(child: Text('Could not find art work? :(')));
                 }
 
                 return SliverPadding(
@@ -72,10 +108,12 @@ class _DataView extends StatelessWidget {
         AppSpacing.v4,
         Text(data.subTitle, style: textTheme.subtitle1),
         AppSpacing.v8,
-        Text(data.physicalMedium, style: textTheme.caption?.copyWith(fontSize: 14)),
-        AppSpacing.v8,
+        if (data.physicalMedium != null) ...<Widget>[
+          Text(data.physicalMedium!, style: textTheme.caption?.copyWith(fontSize: 14)),
+          AppSpacing.v8,
+        ],
         Text(
-          '# ' + data.objectCollection.join(', #'),
+          '# ' + <String>[...data.objectTypes, ...data.objectCollection].join(', #'),
           style: textTheme.caption?.copyWith(color: Colors.blue),
         ),
         AppSpacing.v16,
@@ -88,25 +126,29 @@ class _DataView extends StatelessWidget {
         ]),
         AppSpacing.v10,
         Text(
-          data.label.description ?? data.plaqueDescriptionEnglish ?? data.description,
+          data.label.description ?? data.plaqueDescriptionEnglish ?? data.description ?? 'N/A',
           style: textTheme.bodyText1?.copyWith(height: 1.5),
         ),
         AppSpacing.v16,
         Text(data.scLabelLine, style: textTheme.caption),
-        AppSpacing.v4,
-        AspectRatio(aspectRatio: data.webImage.aspectRatio, child: CachedImage(url: data.webImage.url)),
-        AppSpacing.v4,
+        if (data.webImage?.url != null) ...<Widget>[
+          AppSpacing.v4,
+          AspectRatio(aspectRatio: data.webImage!.aspectRatio, child: CachedImage(url: data.webImage!.url!)),
+          AppSpacing.v4,
+        ],
         ArtColorRow(colors: data.normalizedColors),
         AppSpacing.v2,
         ArtMaterialRow(materials: data.materials),
         AppSpacing.v16,
         const Divider(),
         AppSpacing.v16,
-        const _SectionHeaderText('Dimensions'),
-        AppSpacing.v8,
-        for (final ArtDimension dimension in data.dimensions)
-          ArtDimensionItem(key: Key(dimension.toString()), dimension: dimension),
-        AppSpacing.v12,
+        if (data.dimensions.isNotEmpty) ...<Widget>[
+          const _SectionHeaderText('Dimensions'),
+          AppSpacing.v8,
+          for (final ArtDimension dimension in data.dimensions)
+            ArtDimensionItem(key: Key(dimension.toString()), dimension: dimension),
+          AppSpacing.v12,
+        ],
         const _SectionHeaderText('Principal makers'),
         AppSpacing.v8,
         for (final ArtMaker maker in data.principalMakers) ArtMakerItem(key: Key(maker.name), maker: maker),
