@@ -184,6 +184,23 @@ void main() {
         });
       });
 
+      testWidgets('should not handle overscroll fetch when initial fetch failed', (WidgetTester tester) async {
+        when(() => repository.fetchAll(page: any(named: 'page'))).thenThrow(Exception('Error'));
+
+        await tester.pumpWidget(makeApp(home: const HomePage(), repository: repository));
+
+        await tester.pump();
+
+        final Finder overscrollBox = find.byKey(HomePage.overscrollBoxKey);
+        await tester.scrollUntilVisible(overscrollBox, 500.0);
+
+        expect(overscrollBox, findsOneWidget);
+
+        verifyNever(() => repository.fetchAll(page: 2));
+
+        expect(find.byKey(HomePage.errorBoxKey), findsOneWidget);
+      });
+
       testWidgets('can handle overscroll fetch error and retry', (WidgetTester tester) async {
         int requestCount = 0;
         when(() => repository.fetchAll(page: any(named: 'page'))).thenAnswer((_) async {
