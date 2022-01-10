@@ -1,5 +1,7 @@
 # rijksbook
 
+![Format, Analyze and Test](https://github.com/jogboms/rijksbook/workflows/Format,%20Analyze%20and%20Test/badge.svg?branch=master)
+
 A new Flutter project.
 
 ## Getting Started
