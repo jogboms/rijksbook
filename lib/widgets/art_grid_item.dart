@@ -9,6 +9,9 @@ class ArtGridItem extends StatelessWidget {
   final Art art;
   final VoidCallback onPressed;
 
+  @visibleForTesting
+  static const Key inkWellBoxKey = Key('ink-well-box');
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -18,6 +21,7 @@ class ArtGridItem extends StatelessWidget {
       child: Material(
         type: MaterialType.transparency,
         child: InkWell(
+          key: inkWellBoxKey,
           onTap: onPressed,
           child: Stack(
             children: <Widget>[
