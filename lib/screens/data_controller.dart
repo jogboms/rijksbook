@@ -50,6 +50,9 @@ class PagedDataController extends DataController<List<Art>> {
   }
 
   Future<void> next() async {
+    if (hasError) {
+      return retry();
+    }
     final int page = _page + 1;
     await _fetch(page);
     _page = page;
@@ -61,14 +64,15 @@ class PagedDataController extends DataController<List<Art>> {
   Future<void> _fetch(int page, [bool clear = false]) async {
     state = ConnectionState.waiting;
     try {
-      final List<Art> items = await _source(page: page);
-      _data = <Art>[if (!clear) ...data, ...items];
+      _data = <Art>[
+        if (!clear) ...data,
+        ...(await _source(page: page)),
+      ].toList(growable: false);
       _error = null;
-      state = ConnectionState.done;
     } catch (e, stackTrace) {
       _error = ControllerException(e.toString(), stackTrace);
-      state = ConnectionState.done;
     }
+    state = ConnectionState.done;
   }
 }
 
@@ -84,11 +88,10 @@ class DetailDataController extends DataController<ArtDetail?> {
     try {
       _data = await _source(id);
       _error = null;
-      state = ConnectionState.done;
     } catch (e, stackTrace) {
       _error = ControllerException(e.toString(), stackTrace);
-      state = ConnectionState.done;
     }
+    state = ConnectionState.done;
   }
 
   @override

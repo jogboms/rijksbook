@@ -14,6 +14,8 @@ class HomePage extends StatefulWidget {
   static const Key overscrollBoxKey = Key('overscroll-box');
   @visibleForTesting
   static const Key errorBoxKey = Key('error-box');
+  @visibleForTesting
+  static const Key emptyStateKey = Key('empty-state');
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -22,7 +24,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late final PagedDataController controller = PagedDataController(context.repository.fetchAll);
 
-  final ValueNotifier<bool> singleColumn = ValueNotifier<bool>(true);
+  final ValueNotifier<bool> singleColumn = ValueNotifier<bool>(false);
 
   late final Listenable combinedViewModel = Listenable.merge(<Listenable>[controller, singleColumn]);
 
@@ -32,8 +34,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    controller.fetch();
+    controller.fetch().then(_onFinishedRequest);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    singleColumn.dispose();
+    super.dispose();
   }
 
   @override
@@ -71,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                             children: <Widget>[
                               Text(controller.error!.message),
                               AppSpacing.v4,
-                              TextButton(onPressed: controller.retry, child: const Text('RETRY')),
+                              TextButton(onPressed: _onRetry, child: const Text('RETRY')),
                             ],
                           ),
                         ),
@@ -80,6 +89,12 @@ class _HomePageState extends State<HomePage> {
                   }
 
                   final List<Art> items = controller.data;
+                  if (items.isEmpty) {
+                    return const SliverFillRemaining(
+                      child: Center(key: HomePage.emptyStateKey, child: Text('Could not find any art works? :(')),
+                    );
+                  }
+
                   return SliverPadding(
                     padding: const EdgeInsets.all(8),
                     sliver: SliverGrid(
@@ -113,29 +128,20 @@ class _HomePageState extends State<HomePage> {
                       return child!;
                     }
 
-                    return SafeArea(
-                      top: false,
-                      child: SizedBox(
-                        height: kToolbarHeight,
-                        child: Material(
-                          child: controller.isLoading
-                              ? const LoadingSpinner()
-                              : controller.hasError
-                                  ? Padding(
-                                      key: HomePage.errorBoxKey,
-                                      padding: const EdgeInsets.all(8),
-                                      child: Row(
-                                        children: <Widget>[
-                                          Expanded(child: Text(controller.error!.message)),
-                                          AppSpacing.h4,
-                                          TextButton(onPressed: controller.retry, child: const Text('RETRY')),
-                                        ],
-                                      ),
-                                    )
-                                  : null,
-                        ),
-                      ),
-                    );
+                    child = controller.isLoading
+                        ? const LoadingSpinner()
+                        : controller.hasError
+                            ? Padding(
+                                key: HomePage.errorBoxKey,
+                                padding: const EdgeInsets.all(8),
+                                child: Row(children: <Widget>[
+                                  Expanded(child: Text(controller.error!.message)),
+                                  AppSpacing.h4,
+                                  TextButton(onPressed: _onRetry, child: const Text('RETRY')),
+                                ]),
+                              )
+                            : null;
+                    return SafeArea(top: false, child: SizedBox(height: kToolbarHeight, child: Material(child: child)));
                   },
                 ),
               ),
@@ -144,10 +150,18 @@ class _HomePageState extends State<HomePage> {
         ),
       );
 
+  void _onRetry() => controller.retry().then(_onFinishedRequest);
+
   void _onLoadMore() => controller.next().then((_) => _loadingStatus = LoadingStatus.idle);
 
+  void _onFinishedRequest(void _) {
+    if (!controller.hasError) {
+      _loadingStatus = LoadingStatus.idle;
+    }
+  }
+
   void _onOverscroll() {
-    if (_loadingStatus != LoadingStatus.loading) {
+    if (_loadingStatus == LoadingStatus.idle) {
       _loadingStatus = LoadingStatus.loading;
       _onLoadMore();
     }

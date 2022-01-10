@@ -20,8 +20,6 @@ class ArtLinksButton extends StatelessWidget {
 }
 
 abstract class ArtLinksBrowser {
-  const ArtLinksBrowser();
-
   void open(String url);
 }
 

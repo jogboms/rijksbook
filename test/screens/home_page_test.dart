@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
+import 'package:rijksbook/domain.dart';
 import 'package:rijksbook/screens.dart';
 import 'package:rijksbook/widgets.dart';
 
@@ -78,6 +79,16 @@ void main() {
 
         expect(lastFetchedItem, findsOneWidget);
       });
+    });
+
+    testWidgets('should show empty state when response contains empty data', (WidgetTester tester) async {
+      when(() => repository.fetchAll(page: any(named: 'page'))).thenAnswer((_) async => <Art>[]);
+
+      await tester.pumpWidget(makeApp(home: const HomePage(), repository: repository));
+
+      await tester.pump();
+
+      expect(find.byKey(HomePage.emptyStateKey), findsOneWidget);
     });
 
     group('Error handling', () {
@@ -171,6 +182,23 @@ void main() {
 
           expect(find.byKey(HomePage.errorBoxKey), findsOneWidget);
         });
+      });
+
+      testWidgets('should not handle overscroll fetch when initial fetch failed', (WidgetTester tester) async {
+        when(() => repository.fetchAll(page: any(named: 'page'))).thenThrow(Exception('Error'));
+
+        await tester.pumpWidget(makeApp(home: const HomePage(), repository: repository));
+
+        await tester.pump();
+
+        final Finder overscrollBox = find.byKey(HomePage.overscrollBoxKey);
+        await tester.scrollUntilVisible(overscrollBox, 500.0);
+
+        expect(overscrollBox, findsOneWidget);
+
+        verifyNever(() => repository.fetchAll(page: 2));
+
+        expect(find.byKey(HomePage.errorBoxKey), findsOneWidget);
       });
 
       testWidgets('can handle overscroll fetch error and retry', (WidgetTester tester) async {
