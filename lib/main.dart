@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart';
-import 'package:rijksbook/data.dart';
 
 import 'app.dart';
+import 'data.dart';
 
 const bool _isDemoMode = bool.fromEnvironment('demo-mode', defaultValue: false);
 
