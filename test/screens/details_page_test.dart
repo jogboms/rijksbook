@@ -98,5 +98,23 @@ void main() {
         expect(find.byKey(Key(dummyArtModel.id)), findsOneWidget);
       });
     });
+
+    testWidgets('should show image dialog with image', (WidgetTester tester) async {
+      when(() => repository.fetch(any())).thenAnswer((_) async => dummyArtDetailModel);
+
+      await mockNetworkImages(() async {
+        await tester.pumpWidget(makeApp(home: DetailsPage(art: dummyArtModel), repository: repository));
+
+        await tester.pump();
+
+        await tester.tap(find.byKey(DetailsPage.zoomButtonKey));
+
+        await tester.pump();
+
+        expect(find.byType(ImageDialog), findsOneWidget);
+        expect(find.byType(CloseButton), findsOneWidget);
+        expect(find.byKey(const Key('dialog-imageUrl')), findsOneWidget);
+      });
+    });
   });
 }
