@@ -24,7 +24,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late final PagedDataController controller = PagedDataController(context.repository.fetchAll);
 
-  final ValueNotifier<bool> singleColumn = ValueNotifier<bool>(true);
+  final ValueNotifier<bool> singleColumn = ValueNotifier<bool>(false);
 
   late final Listenable combinedViewModel = Listenable.merge(<Listenable>[controller, singleColumn]);
 
@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    controller.fetch();
+    controller.fetch().then(_onFinishedRequest);
     super.initState();
   }
 
@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                             children: <Widget>[
                               Text(controller.error!.message),
                               AppSpacing.v4,
-                              TextButton(onPressed: controller.retry, child: const Text('RETRY')),
+                              TextButton(onPressed: _onRetry, child: const Text('RETRY')),
                             ],
                           ),
                         ),
@@ -137,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                                 child: Row(children: <Widget>[
                                   Expanded(child: Text(controller.error!.message)),
                                   AppSpacing.h4,
-                                  TextButton(onPressed: controller.retry, child: const Text('RETRY')),
+                                  TextButton(onPressed: _onRetry, child: const Text('RETRY')),
                                 ]),
                               )
                             : null;
@@ -150,10 +150,18 @@ class _HomePageState extends State<HomePage> {
         ),
       );
 
+  void _onRetry() => controller.retry().then(_onFinishedRequest);
+
   void _onLoadMore() => controller.next().then((_) => _loadingStatus = LoadingStatus.idle);
 
+  void _onFinishedRequest(void _) {
+    if (!controller.hasError) {
+      _loadingStatus = LoadingStatus.idle;
+    }
+  }
+
   void _onOverscroll() {
-    if (_loadingStatus != LoadingStatus.loading) {
+    if (_loadingStatus == LoadingStatus.idle) {
       _loadingStatus = LoadingStatus.loading;
       _onLoadMore();
     }
