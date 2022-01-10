@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
+import 'package:rijksbook/domain.dart';
 import 'package:rijksbook/screens.dart';
 import 'package:rijksbook/widgets.dart';
 
@@ -78,6 +79,16 @@ void main() {
 
         expect(lastFetchedItem, findsOneWidget);
       });
+    });
+
+    testWidgets('should show empty state when response contains empty data', (WidgetTester tester) async {
+      when(() => repository.fetchAll(page: any(named: 'page'))).thenAnswer((_) async => <Art>[]);
+
+      await tester.pumpWidget(makeApp(home: const HomePage(), repository: repository));
+
+      await tester.pump();
+
+      expect(find.byKey(HomePage.emptyStateKey), findsOneWidget);
     });
 
     group('Error handling', () {
