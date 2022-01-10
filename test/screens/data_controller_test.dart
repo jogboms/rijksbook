@@ -76,7 +76,7 @@ void main() {
         expect(controller.hasError, false);
       });
 
-      test('should move to next page regardless of error', () async {
+      test('should move to next page regardless if current state has error', () async {
         int requestCount = 0;
         final PagedDataController controller = PagedDataController(
           ({required int page}) async {
@@ -92,6 +92,31 @@ void main() {
         controller.addListener(() => recorder(controller.state));
 
         await controller.fetch();
+        await controller.next();
+
+        expect(controller.data, dummyArtModelList);
+        expect(controller.page, 2);
+        expect(controller.hasError, true);
+      });
+
+      test('should keep retrying instead of next page when previous state has error', () async {
+        int requestCount = 0;
+        final PagedDataController controller = PagedDataController(
+          ({required int page}) async {
+            if (requestCount == 1) {
+              throw 'Error';
+            }
+            requestCount++;
+            return dummyArtModelList;
+          },
+        );
+
+        final Recorder recorder = Recorder();
+        controller.addListener(() => recorder(controller.state));
+
+        await controller.fetch();
+        await controller.next();
+        await controller.next();
         await controller.next();
 
         expect(controller.data, dummyArtModelList);
