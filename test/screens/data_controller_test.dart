@@ -99,6 +99,19 @@ void main() {
         expect(controller.hasError, true);
       });
 
+      test('data should be unmodifiable from the outside', () async {
+        final PagedDataController controller = PagedDataController(
+          ({required int page}) async => dummyArtModelList,
+        );
+
+        expect(() => controller.data.add(dummyArtModel), throwsA(isA<UnsupportedError>()));
+
+        await controller.fetch();
+
+        expect(controller.data, dummyArtModelList);
+        expect(() => controller.data.removeLast(), throwsA(isA<UnsupportedError>()));
+      });
+
       test('can handle errors', () async {
         final PagedDataController controller = PagedDataController(
           ({required int page}) async => throw 'Error',

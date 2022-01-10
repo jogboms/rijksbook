@@ -64,7 +64,7 @@ class PagedDataController extends DataController<List<Art>> {
       _data = <Art>[
         if (!clear) ...data,
         ...(await _source(page: page)),
-      ];
+      ].toList(growable: false);
       _error = null;
     } catch (e, stackTrace) {
       _error = ControllerException(e.toString(), stackTrace);
