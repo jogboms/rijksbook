@@ -14,6 +14,8 @@ class HomePage extends StatefulWidget {
   static const Key overscrollBoxKey = Key('overscroll-box');
   @visibleForTesting
   static const Key errorBoxKey = Key('error-box');
+  @visibleForTesting
+  static const Key emptyStateKey = Key('empty-state');
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -87,6 +89,12 @@ class _HomePageState extends State<HomePage> {
                   }
 
                   final List<Art> items = controller.data;
+                  if (items.isEmpty) {
+                    return const SliverFillRemaining(
+                      child: Center(key: HomePage.emptyStateKey, child: Text('Could not find any art works? :(')),
+                    );
+                  }
+
                   return SliverPadding(
                     padding: const EdgeInsets.all(8),
                     sliver: SliverGrid(
