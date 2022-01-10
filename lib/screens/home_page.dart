@@ -37,6 +37,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    singleColumn.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) => Scaffold(
         body: NotificationListener<ScrollNotification>(
           onNotification: _onScrollNotification,
@@ -113,29 +120,20 @@ class _HomePageState extends State<HomePage> {
                       return child!;
                     }
 
-                    return SafeArea(
-                      top: false,
-                      child: SizedBox(
-                        height: kToolbarHeight,
-                        child: Material(
-                          child: controller.isLoading
-                              ? const LoadingSpinner()
-                              : controller.hasError
-                                  ? Padding(
-                                      key: HomePage.errorBoxKey,
-                                      padding: const EdgeInsets.all(8),
-                                      child: Row(
-                                        children: <Widget>[
-                                          Expanded(child: Text(controller.error!.message)),
-                                          AppSpacing.h4,
-                                          TextButton(onPressed: controller.retry, child: const Text('RETRY')),
-                                        ],
-                                      ),
-                                    )
-                                  : null,
-                        ),
-                      ),
-                    );
+                    child = controller.isLoading
+                        ? const LoadingSpinner()
+                        : controller.hasError
+                            ? Padding(
+                                key: HomePage.errorBoxKey,
+                                padding: const EdgeInsets.all(8),
+                                child: Row(children: <Widget>[
+                                  Expanded(child: Text(controller.error!.message)),
+                                  AppSpacing.h4,
+                                  TextButton(onPressed: controller.retry, child: const Text('RETRY')),
+                                ]),
+                              )
+                            : null;
+                    return SafeArea(top: false, child: SizedBox(height: kToolbarHeight, child: Material(child: child)));
                   },
                 ),
               ),
