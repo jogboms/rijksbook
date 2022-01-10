@@ -16,6 +16,8 @@ class DetailsPage extends StatefulWidget {
 
   @visibleForTesting
   static const Key errorBoxKey = Key('error-box');
+  @visibleForTesting
+  static const Key zoomButtonKey = Key('zoom-button');
 
   @override
   _DetailsPageState createState() => _DetailsPageState();
@@ -133,7 +135,23 @@ class _DataView extends StatelessWidget {
         Text(data.scLabelLine, style: textTheme.caption),
         if (data.webImage?.url != null) ...<Widget>[
           AppSpacing.v4,
-          AspectRatio(aspectRatio: data.webImage!.aspectRatio, child: CachedImage(url: data.webImage!.url!)),
+          AspectRatio(
+            aspectRatio: data.webImage!.aspectRatio,
+            child: Stack(
+              children: <Widget>[
+                CachedImage(
+                  url: data.webImage!.url!,
+                  builder: (ImageProvider<Object> provider) => Ink.image(image: provider, fit: BoxFit.cover),
+                ),
+                IconButton(
+                  key: DetailsPage.zoomButtonKey,
+                  onPressed: () =>
+                      showDialog<void>(context: context, builder: (_) => ImageDialog(url: data.webImage!.url!)),
+                  icon: const Icon(Icons.zoom_out_map),
+                )
+              ],
+            ),
+          ),
           AppSpacing.v4,
         ],
         ArtColorRow(colors: data.normalizedColors),
