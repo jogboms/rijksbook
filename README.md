@@ -1,6 +1,6 @@
 # rijksbook
 
-![Format, Analyze and Test](https://github.com/jogboms/rijksbook/workflows/Format,%20Analyze%20and%20Test/badge.svg?branch=master)
+![Format, Analyze and Test](https://github.com/jogboms/rijksbook/workflows/Format,%20Analyze%20and%20Test/badge.svg?branch=master) [![codecov](https://codecov.io/gh/jogboms/rijksbook/branch/master/graph/badge.svg)](https://codecov.io/gh/jogboms/rijksbook)
 
 A new Flutter project.
 
