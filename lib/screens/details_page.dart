@@ -65,14 +65,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   return SliverFillRemaining(
                     child: Center(
                       key: DetailsPage.errorBoxKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Text(controller.error!.message),
-                          AppSpacing.v4,
-                          TextButton(onPressed: controller.retry, child: const Text('RETRY')),
-                        ],
-                      ),
+                      child: ErrorDisplayView(message: controller.error!.message, onRetry: controller.retry),
                     ),
                   );
                 }

@@ -75,14 +75,7 @@ class _HomePageState extends State<HomePage> {
                       return SliverFillRemaining(
                         child: Center(
                           key: HomePage.errorBoxKey,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Text(controller.error!.message),
-                              AppSpacing.v4,
-                              TextButton(onPressed: _onRetry, child: const Text('RETRY')),
-                            ],
-                          ),
+                          child: ErrorDisplayView(message: controller.error!.message, onRetry: _onRetry),
                         ),
                       );
                     }
@@ -134,11 +127,11 @@ class _HomePageState extends State<HomePage> {
                             ? Padding(
                                 key: HomePage.errorBoxKey,
                                 padding: const EdgeInsets.all(8),
-                                child: Row(children: <Widget>[
-                                  Expanded(child: Text(controller.error!.message)),
-                                  AppSpacing.h4,
-                                  TextButton(onPressed: _onRetry, child: const Text('RETRY')),
-                                ]),
+                                child: ErrorDisplayView(
+                                  message: controller.error!.message,
+                                  onRetry: _onRetry,
+                                  direction: Axis.horizontal,
+                                ),
                               )
                             : null;
                     return SafeArea(top: false, child: SizedBox(height: kToolbarHeight, child: Material(child: child)));

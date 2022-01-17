@@ -5,5 +5,6 @@ export 'widgets/art_links_button.dart';
 export 'widgets/art_maker_item.dart';
 export 'widgets/art_material_row.dart';
 export 'widgets/cached_image.dart';
+export 'widgets/error_display_view.dart';
 export 'widgets/image_dialog.dart';
 export 'widgets/loading_spinner.dart';
